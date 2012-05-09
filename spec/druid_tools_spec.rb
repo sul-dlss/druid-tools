@@ -16,11 +16,16 @@ describe DruidTools::Druid do
     FileUtils.rm_rf(File.join(@fixture_dir,'cd'))
   end
 
+  it "should provide the full druid including the prefix" do
+    DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir).druid.should == 'druid:cd456ef7890'
+    DruidTools::Druid.new('cd456ef7890',@fixture_dir).druid.should == 'druid:cd456ef7890'
+  end
+  
   it "should extract the ID from the stem" do
     DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir).id.should == 'cd456ef7890'
     DruidTools::Druid.new('cd456ef7890',@fixture_dir).id.should == 'cd456ef7890'
   end
-
+  
   it "should raise an exception if the druid is invalid" do
     lambda { DruidTools::Druid.new('nondruid:cd456ef7890',@fixture_dir) }.should raise_error(ArgumentError)
     lambda { DruidTools::Druid.new('druid:cd4567ef890',@fixture_dir) }.should raise_error(ArgumentError)
@@ -55,6 +60,22 @@ describe DruidTools::Druid do
     File.exists?(@tree_1).should be_false
     File.exists?(@tree_2).should be_false
     File.exists?(File.join(@fixture_dir,'cd')).should be_false
+  end
+
+  describe "alternate prefixes" do
+    before :all do
+      DruidTools::Druid.prefix = 'sulair'
+    end
+    
+    after :all do
+      DruidTools::Druid.prefix = 'druid'
+    end
+
+    it "should handle alternate prefixes" do
+      lambda { DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir) }.should raise_error(ArgumentError)
+      DruidTools::Druid.new('sulair:cd456ef7890',@fixture_dir).id.should == 'cd456ef7890'
+      DruidTools::Druid.new('cd456ef7890',@fixture_dir).druid.should == 'sulair:cd456ef7890'
+    end
   end
   
   describe "content directories" do

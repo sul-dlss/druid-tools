@@ -2,6 +2,15 @@ module DruidTools
   class Druid
     attr_accessor :druid, :base
     
+    class << self
+      attr_accessor :prefix
+      
+      def pattern
+        /^(?:#{self.prefix}:)?([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/
+      end
+    end
+    self.prefix = 'druid'
+    
     [:content, :metadata, :temp].each do |dir_type|
       self.class_eval <<-EOC
         def #{dir_type}_dir(create=true)
@@ -14,21 +23,21 @@ module DruidTools
       EOC
     end
     
-    DRUID_PATTERN = /^(?:druid:)?([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/
     def initialize(druid,base='.')
-      if druid !~ DRUID_PATTERN
+      if druid !~ self.class.pattern
         raise ArgumentError, "Invalid DRUID: #{druid}"
       end
+      druid = [self.class.prefix,druid].join(':') unless druid =~ /^#{self.class.prefix}:/
       @base = base
       @druid = druid
     end
   
     def id
-      @druid.scan(/^(?:druid:)?(.+)$/).flatten.last
+      @druid.scan(self.class.pattern).flatten.join('')
     end
   
     def tree
-      @druid.scan(DRUID_PATTERN).flatten + [id]
+      @druid.scan(self.class.pattern).flatten + [id]
     end
   
     def path(extra=nil, create=false)
