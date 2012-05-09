@@ -103,22 +103,38 @@ describe DruidTools::Druid do
   end
   
   describe "content discovery" do
+    before :all do
+      @druid = DruidTools::Druid.new(@druid_1,@fixture_dir)
+    end
+    
     it "should find content in content directories" do
-      druid = DruidTools::Druid.new(@druid_1,@fixture_dir)
-      File.open(File.join(druid.content_dir,'someContent'),'w') { |f| f.write 'This is the content' }
-      druid.find_content('someContent').should == File.join(druid.content_dir,'someContent')
+      location = @druid.content_dir
+      File.open(File.join(location,'someContent'),'w') { |f| f.write 'This is the content' }
+      @druid.find_content('someContent').should == File.join(location,'someContent')
     end
     
     it "should find content in the root directory" do
-      druid = DruidTools::Druid.new(@druid_1,@fixture_dir)
-      File.open(File.join(druid.path(nil,true),'someContent'),'w') { |f| f.write 'This is the content' }
-      druid.find_content('someContent').should == File.join(druid.path,'someContent')
+      location = @druid.path(nil,true)
+      File.open(File.join(location,'someContent'),'w') { |f| f.write 'This is the content' }
+      @druid.find_content('someContent').should == File.join(location,'someContent')
+    end
+
+    it "should find content in the leaf directory" do
+      location = File.expand_path('..',@druid.path(nil,true))
+      File.open(File.join(location,'someContent'),'w') { |f| f.write 'This is the content' }
+      @druid.find_content('someContent').should == File.join(location,'someContent')
     end
     
     it "should not find content in the wrong content directory" do
-      druid = DruidTools::Druid.new(@druid_1,@fixture_dir)
-      File.open(File.join(druid.metadata_dir,'someContent'),'w') { |f| f.write 'This is the content' }
-      druid.find_content('someContent').should be_nil
+      location = @druid.metadata_dir
+      File.open(File.join(location,'someContent'),'w') { |f| f.write 'This is the content' }
+      @druid.find_content('someContent').should be_nil
+    end
+
+    it "should not find content in a higher-up directory" do
+      location = File.expand_path('../..',@druid.path(nil,true))
+      File.open(File.join(location,'someContent'),'w') { |f| f.write 'This is the content' }
+      @druid.find_content('someContent').should be_nil
     end
   end
   

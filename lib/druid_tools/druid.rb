@@ -58,7 +58,7 @@ module DruidTools
     end
     
     def find(type, path)
-      possibles = [self.path(type.to_s),self.path]
+      possibles = [self.path(type.to_s),self.path,File.expand_path('..',self.path)]
       loc = possibles.find { |p| File.exists?(File.join(p,path)) }
       loc.nil? ? nil : File.join(loc,path)
     end
