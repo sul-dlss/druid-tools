@@ -71,9 +71,7 @@ module DruidTools
       if(File.directory? new_path)
         raise DruidTools::DifferentContentExistsError, "Unable to create link, directory already exists: #{new_path}"
       end
-      real_dirs = tree
-      real_dirs.slice!(real_dirs.length - 1)
-      real_path = File.join(base, real_dirs)
+      real_path = File.expand_path('..',new_path)
       FileUtils.mkdir_p(real_path)
       FileUtils.ln_s(source, new_path)
     end
