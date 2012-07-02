@@ -6,8 +6,13 @@ module DruidTools
       attr_accessor :prefix
       
       def pattern
-        /^(?:#{self.prefix}:)?([a-z]{2})(\d{3})([a-z]{2})(\d{4})$/
+        /\A(?:#{self.prefix}:)?([a-z]{2})(\d{3})([a-z]{2})(\d{4})\z/
       end
+
+      def valid?(druid)
+        return druid =~ pattern ? true : false
+      end
+
     end
     self.prefix = 'druid'
     

@@ -16,6 +16,19 @@ describe DruidTools::Druid do
     FileUtils.rm_rf(File.join(@fixture_dir,'cd'))
   end
 
+  it "should be able to validate druid strings using the valid? class method" do
+    tests = [
+      # Expected     Input druid
+      [true,         'druid:aa000bb0001'],
+      [true,         'aa000bb0001'],
+      [false,        "xxx\naa000bb0001"],
+      [false,        'aaa000bb0001'],
+    ]
+    tests.each do |exp, dru|
+      DruidTools::Druid.valid?(dru).should == exp
+    end
+  end
+
   it "should provide the full druid including the prefix" do
     DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir).druid.should == 'druid:cd456ef7890'
     DruidTools::Druid.new('cd456ef7890',@fixture_dir).druid.should == 'druid:cd456ef7890'

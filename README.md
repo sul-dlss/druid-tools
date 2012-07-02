@@ -4,7 +4,7 @@
 
 ### Get attributes and paths
 
-    d = DruidTools.new('druid:ab123cd4567', '/dor/workspace')
+  d = DruidTools.new('druid:ab123cd4567', '/dor/workspace')
 	d.druid
 	=> "druid:ab123cd4567"
 	d.id
@@ -13,6 +13,13 @@
 	=> "/dor/workspace/ab/123/cd/4567/ab123cd4567"
 	d.path('content/my_file.jpg')
 	=> "/dor/workspace/ab/123/cd/4567/ab123cd4567/content/my_file.jpg"
+
+### Check whether a druid is valid
+
+  d = DruidTools.valid?('druid:ab123cd4567')
+	=> true
+  d = DruidTools.valid?('blah')
+	=> false
 
 ### Manipulate directories and symlinks
 
@@ -54,5 +61,6 @@ Pass `false` as a parameter to prevent directory creation.
 	
 ## History
 
+- <b>0.2.0</b> - Added DruidTools::Druid.valid?
 - <b>0.1.0</b> - Additional support for alternate content locations
 - <b>0.0.1</b> - Initial Release 
