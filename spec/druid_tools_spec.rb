@@ -182,9 +182,10 @@ describe DruidTools::Druid do
       File.readlink(@tree_2).should == @source_dir
     end
     
-    it "raises SameContentExistsError if the link to source already exists" do
+    it "should not error out if the link to source already exists" do
       @dr.mkdir_with_final_link(@source_dir)
-      lambda { @dr.mkdir_with_final_link(@source_dir) }.should raise_error(DruidTools::SameContentExistsError)
+      File.should be_symlink(@dr.path)
+      File.readlink(@tree_2).should == @source_dir
     end
     
     it "raises DifferentContentExistsError if a directory already exists in the workspace for this druid" do

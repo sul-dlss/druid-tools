@@ -70,15 +70,12 @@ module DruidTools
     
     def mkdir_with_final_link(source, extra=nil)
       new_path = path(extra)
-      if(File.symlink? new_path)
-        raise DruidTools::SameContentExistsError, "The link already exists: #{new_path}"
-      end
-      if(File.directory? new_path)
+      if(File.directory?(new_path) && !File.symlink?(new_path))
         raise DruidTools::DifferentContentExistsError, "Unable to create link, directory already exists: #{new_path}"
       end
       real_path = File.expand_path('..',new_path)
       FileUtils.mkdir_p(real_path)
-      FileUtils.ln_s(source, new_path)
+      FileUtils.ln_s(source, new_path, :force=>true)
     end
   
     def rmdir(extra=nil)
