@@ -118,6 +118,7 @@ describe DruidTools::Druid do
   describe "content discovery" do
     before :all do
       @druid = DruidTools::Druid.new(@druid_1,@fixture_dir)
+      @filelist = %w(1 2 3 4).collect { |num| "someFile#{num}" }
     end
     
     it "should find content in content directories" do
@@ -149,6 +150,42 @@ describe DruidTools::Druid do
       File.open(File.join(location,'someContent'),'w') { |f| f.write 'This is the content' }
       @druid.find_content('someContent').should be_nil
     end
+
+    it "should find a filelist in the content directory" do
+      location = Pathname(@druid.content_dir)
+      @filelist.each do |filename|
+        location.join(filename).open('w') { |f| f.write "This is #{filename}" }
+      end
+      @druid.find_filelist_parent('content',@filelist).should == location
+    end
+
+    it "should find a filelist in the root directory" do
+      location = Pathname(@druid.path(nil,true))
+      @filelist.each do |filename|
+        location.join(filename).open('w') { |f| f.write "This is #{filename}" }
+      end
+      @druid.find_filelist_parent('content',@filelist).should == location
+    end
+
+    it "should find a filelist in the leaf directory" do
+      location = Pathname(File.expand_path('..',@druid.path(nil,true)))
+      @filelist.each do |filename|
+        location.join(filename).open('w') { |f| f.write "This is #{filename}" }
+      end
+      @druid.find_filelist_parent('content',@filelist).should == location
+    end
+
+    it "should raise an exception if the first file in the filelist is not found" do
+      location = Pathname(@druid.content_dir)
+      lambda{@druid.find_filelist_parent('content',@filelist)}.should raise_exception(/content dir not found for 'someFile1' when searching/)
+    end
+
+    it "should raise an exception if any other file in the filelist is not found" do
+      location = Pathname(@druid.content_dir)
+      location.join(@filelist.first).open('w') { |f| f.write "This is #{@filelist.first}" }
+      lambda{@druid.find_filelist_parent('content',@filelist)}.should raise_exception(/File 'someFile2' not found/)
+    end
+
   end
   
   describe "#mkdir error handling" do

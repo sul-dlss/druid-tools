@@ -1,3 +1,5 @@
+require 'pathname'
+
 module DruidTools
   class Druid
     attr_accessor :druid, :base
@@ -67,7 +69,24 @@ module DruidTools
       loc = possibles.find { |p| File.exists?(File.join(p,path)) }
       loc.nil? ? nil : File.join(loc,path)
     end
-    
+
+    # @param [String] type The type of directory being sought ('content', 'metadata', or 'temp')
+    # @param [Array<String>,String] filelist The files that are expected to be present in the directory
+    # @return [Pathname] Search for and return the pathname of the directory that contains the list of files.
+    #    Raises an exception unless a directory is found that contains all the files in the list.
+    def find_filelist_parent(type, filelist)
+      raise "File list not specified" unless filelist.size > 0
+      filelist = [filelist] unless filelist.is_a?(Array)
+      search_dir = Pathname(self.path(type))
+      directories = [search_dir, search_dir.parent, search_dir.parent.parent]
+      found_dir = directories.find { |pathname| pathname.join(filelist[0]).exist? }
+      raise "#{type} dir not found for '#{filelist[0]}' when searching '#{search_dir}'" if found_dir.nil?
+      filelist.each do |filename|
+        raise "File '#{filename}' not found in #{type} dir s'#{found_dir}'" unless found_dir.join(filename).exist?
+      end
+      found_dir
+    end
+
     def mkdir_with_final_link(source, extra=nil)
       new_path = path(extra)
       if(File.directory?(new_path) && !File.symlink?(new_path))
@@ -92,5 +111,6 @@ module DruidTools
         parts.pop
       end
     end
+
   end
 end

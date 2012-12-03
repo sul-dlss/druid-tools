@@ -61,7 +61,8 @@ Pass `false` as a parameter to prevent directory creation.
 	
 ## History
 
-- <b>0.2.1</b> - Do not error out during symlink creation if it already exists 
+- <b>0.2.2</b> - Added find_filelist_parent method allowing search for a set of files
+- <b>0.2.1</b> - Do not error out during symlink creation if it already exists
 - <b>0.2.0</b> - Added DruidTools::Druid.valid?
 - <b>0.1.0</b> - Additional support for alternate content locations
 - <b>0.0.1</b> - Initial Release 
