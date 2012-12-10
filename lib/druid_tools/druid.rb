@@ -75,7 +75,7 @@ module DruidTools
     # @return [Pathname] Search for and return the pathname of the directory that contains the list of files.
     #    Raises an exception unless a directory is found that contains all the files in the list.
     def find_filelist_parent(type, filelist)
-      raise "File list not specified" unless filelist.size > 0
+      raise "File list not specified" if filelist.nil? or filelist.empty?
       filelist = [filelist] unless filelist.is_a?(Array)
       search_dir = Pathname(self.path(type))
       directories = [search_dir, search_dir.parent, search_dir.parent.parent]
