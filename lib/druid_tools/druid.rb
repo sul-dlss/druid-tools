@@ -30,8 +30,11 @@ module DruidTools
       EOC
     end
     
-    def initialize(druid,base='.')
-      if druid !~ self.class.pattern
+    # @param druid [String] A valid druid
+    # @param base [String] The directory used by #path
+    def initialize(druid, base='.')
+      druid = druid.to_s unless druid.is_a? String
+      unless self.class.valid?(druid)
         raise ArgumentError, "Invalid DRUID: '#{druid}'"
       end
       druid = [self.class.prefix,druid].join(':') unless druid =~ /^#{self.class.prefix}:/
