@@ -21,8 +21,14 @@ describe DruidTools::Druid do
       # Expected     Input druid
       [true,         'druid:aa000bb0001'],
       [true,         'aa000bb0001'],
+      [false,        'Aa000bb0001'],
       [false,        "xxx\naa000bb0001"],
       [false,        'aaa000bb0001'],
+      [false,        'druidX:aa000bb0001'],
+      [false,        ':aa000bb0001'],
+      [false,        'druid:az918AZ9381'],
+      [true,         'druid:az918AZ9381'.downcase],
+      [true,         'druid:zz943vx1492']
     ]
     tests.each do |exp, dru|
       DruidTools::Druid.valid?(dru).should == exp
