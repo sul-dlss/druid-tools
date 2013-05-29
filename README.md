@@ -16,9 +16,9 @@
 
 ### Check whether a druid is valid
 
-  d = DruidTools.valid?('druid:ab123cd4567')
+  d = DruidTools::Druid.valid?('druid:ab123cd4567')
 	=> true
-  d = DruidTools.valid?('blah')
+  d = DruidTools::Druid.valid?('blah')
 	=> false
 
 ### Manipulate directories and symlinks
