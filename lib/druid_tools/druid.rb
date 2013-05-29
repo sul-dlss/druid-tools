@@ -32,7 +32,7 @@ module DruidTools
     
     def initialize(druid,base='.')
       if druid !~ self.class.pattern
-        raise ArgumentError, "Invalid DRUID: #{druid}"
+        raise ArgumentError, "Invalid DRUID: '#{druid}'"
       end
       druid = [self.class.prefix,druid].join(':') unless druid =~ /^#{self.class.prefix}:/
       @base = base
