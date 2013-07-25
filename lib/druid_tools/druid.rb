@@ -7,10 +7,18 @@ module DruidTools
     class << self
       attr_accessor :prefix
       
+      # @return [Regexp] matches druid:aa111aa1111 or aa111aa1111
       def pattern
         /\A(?:#{self.prefix}:)?([a-z]{2})(\d{3})([a-z]{2})(\d{4})\z/
       end
 
+      # @return [String] suitable for use in [Dir#glob]
+      def glob
+        "{#{self.prefix}:,}[a-z][a-z][0-9][0-9][0-9][a-z][a-z][0-9][0-9][0-9][0-9]"
+      end
+
+      # @param [String] druid id
+      # @return [Boolean] true if druid matches pattern; otherwise false
       def valid?(druid)
         return druid =~ pattern ? true : false
       end
