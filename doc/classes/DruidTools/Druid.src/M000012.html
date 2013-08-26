@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>rmdir (DruidTools::Druid)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/druid_tools/druid.rb, line 112</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">rmdir</span>(<span class="ruby-identifier">extra</span>=<span class="ruby-keyword kw">nil</span>)
+      <span class="ruby-identifier">parts</span> = <span class="ruby-identifier">tree</span>
+      <span class="ruby-identifier">parts</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">extra</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">extra</span>.<span class="ruby-identifier">nil?</span>
+      <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">parts</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+        <span class="ruby-identifier">dir</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">base</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">parts</span>)
+        <span class="ruby-keyword kw">begin</span>
+          <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">dir</span>,<span class="ruby-value str">'.DS_Store'</span>), <span class="ruby-identifier">:force</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">true</span>)
+          <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rmdir</span>(<span class="ruby-identifier">dir</span>)
+        <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">Errno</span><span class="ruby-operator">::</span><span class="ruby-constant">ENOTEMPTY</span>
+          <span class="ruby-keyword kw">break</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">parts</span>.<span class="ruby-identifier">pop</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
