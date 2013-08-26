@@ -26,7 +26,16 @@ describe DruidTools::Druid do
       [false,        'aaa000bb0001'],
       [false,        'druidX:aa000bb0001'],
       [false,        ':aa000bb0001'],
-      [false,        'druid:az918AZ9381'],
+      [true,         'aa123bb1234'],
+      [false,        'aa12bb1234'],
+      [false,        'aa1234bb1234'],
+      [false,        'aa123bb123'],
+      [false,        'aa123bb12345'],
+      [false,        'a123bb1234'],
+      [false,        'aaa123bb1234'],
+      [false,        'aa123b1234'],
+      [false,        'aa123bbb1234'],
+      [false,        'druid:az918AZ9381'.upcase],
       [true,         'druid:az918AZ9381'.downcase],
       [true,         'druid:zz943vx1492']
     ]
@@ -118,6 +127,12 @@ describe DruidTools::Druid do
       File.exists?(File.join(@tree_1,'content')).should be_true
       File.exists?(File.join(@tree_1,'metadata')).should be_true
       File.exists?(File.join(@tree_1,'temp')).should be_true
+    end
+  
+    it "should match glob" do
+      druid = DruidTools::Druid.new(@druid_1,@fixture_dir)
+      druid.mkdir
+      Dir.glob(File.join(File.dirname(druid.path), DruidTools::Druid::glob)).size.should == 1
     end
   end
   
