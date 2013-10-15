@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-source 'http://sul-gems.stanford.edu'
 
 group :development do
   gem "ruby-debug", :platform => :ruby_18
