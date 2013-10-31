@@ -13,3 +13,7 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
+.rvmrc
+.ruby_version
+.ruby_gemset
+
