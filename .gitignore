@@ -14,6 +14,6 @@ test/tmp
 test/version_tmp
 tmp
 .rvmrc
-.ruby_version
-.ruby_gemset
+.ruby-version
+.ruby-gemset
 
