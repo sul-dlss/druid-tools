@@ -35,7 +35,7 @@ Tools to manipulate DRUID trees and content directories
     d.rmdir
     # Link content from another source into a druid tree
     d.mkdir_with_final_link('/some/other/content/location')
-    
+
 ### Content-specific methods create the relevant directories if they don't exist
 
 Pass `false` as a parameter to prevent directory creation, or `true` (default) to create directories.
@@ -50,25 +50,45 @@ Pass `false` as a parameter to prevent directory creation, or `true` (default) t
     => "/dor/workspace/ab/123/cd/4567/ab123cd4567/metadata"
     d.temp_dir(false)
     => "/dor/workspace/ab/123/cd/4567/ab123cd4567/temp"
-    
+
 ### Locate existing content within the druid tree
 
     # In the correct directory
     d.find_metadata('contentMetadata.xml')
     => "/dor/workspace/ab/123/cd/4567/ab123cd4567/metadata/contentMetadata.xml"
-    
+
     # In other known previous locations, for backward compatibility
     d.find_metadata('contentMetadata.xml')
     => "/dor/workspace/ab/123/cd/4567/ab123cd4567/contentMetadata.xml"
 
     d.find_metadata('contentMetadata.xml')
     => "/dor/workspace/ab/123/cd/4567/contentMetadata.xml"
-    
+
     d.find_content('this/file/does/not/exist.jpg')
     => nil
-    
-## History
 
+### Pruning: removes leaves of tree up to non-empty branches
+
+    d1 = DruidTools::Druid.new 'druid:cd456ef7890', '/workspace'
+    d1.mkdir
+    d2 = DruidTools::Druid.new 'druid:cd456gh1234', '/workspace'
+    d2.mkdir
+
+    # /workspace/cd/456/gh/1234/cd456gh1234 pruned down to /workspace/cd/456
+    # /workspace/cd/456/ef/7890/cd456ef7890 left intact
+    d2.prune!
+
+### Stacks and Purl compatible Druid.  All files at the leaf directories
+
+    pd = DruidTools::PurlDruid.new 'druid:ab123cd4567', '/purl'
+    pd.path
+    => "/purl/ab/123/cd/4567"
+    pd.content_dir
+    => "/purl/ab/123/cd/4567"
+
+### History
+
+- <b>0.3.0</b> - Added #prune method. Added AccessDruid for stacks and purl access
 - <b>0.2.6</b> - Fixed VERSION warning message, and documentation cleanup
 - <b>0.2.5</b> - Added glob pattern as DruidTools::Druid.glob
 - <b>0.2.4</b> - Allow non-String as .new parameter and added InvalidDruidError
@@ -77,4 +97,4 @@ Pass `false` as a parameter to prevent directory creation, or `true` (default) t
 - <b>0.2.1</b> - Do not error out during symlink creation if it already exists
 - <b>0.2.0</b> - Added DruidTools::Druid.valid?
 - <b>0.1.0</b> - Additional support for alternate content locations
-- <b>0.0.1</b> - Initial Release 
+- <b>0.0.1</b> - Initial Release

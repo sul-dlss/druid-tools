@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    druid-tools (0.2.6)
+    druid-tools (0.3.0)
 
 GEM
   remote: https://rubygems.org/
