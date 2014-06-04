@@ -6,7 +6,7 @@ Tools to manipulate DRUID trees and content directories
 
 ### Get attributes and paths
 
-    d = DruidTools.new('druid:ab123cd4567', '/dor/workspace')
+    d = DruidTools::Druid.new('druid:ab123cd4567', '/dor/workspace')
     d.druid
     => "druid:ab123cd4567"
     d.id
