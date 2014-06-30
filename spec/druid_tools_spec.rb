@@ -66,28 +66,28 @@ describe DruidTools::Druid do
   end
 
   it "should create and destroy druid directories" do
-    File.exists?(@tree_1).should be_false
-    File.exists?(@tree_2).should be_false
+    File.exists?(@tree_1).should eq false
+    File.exists?(@tree_2).should eq false
 
     druid_1 = DruidTools::Druid.new(@druid_1,@fixture_dir)
     druid_2 = DruidTools::Druid.new(@druid_2,@fixture_dir)
 
     druid_1.mkdir
-    File.exists?(@tree_1).should be_true
-    File.exists?(@tree_2).should be_false
+    File.exists?(@tree_1).should eq true
+    File.exists?(@tree_2).should eq false
 
     druid_2.mkdir
-    File.exists?(@tree_1).should be_true
-    File.exists?(@tree_2).should be_true
+    File.exists?(@tree_1).should eq true
+    File.exists?(@tree_2).should eq true
 
     druid_2.rmdir
-    File.exists?(@tree_1).should be_true
-    File.exists?(@tree_2).should be_false
+    File.exists?(@tree_1).should eq true
+    File.exists?(@tree_2).should eq false
 
     druid_1.rmdir
-    File.exists?(@tree_1).should be_false
-    File.exists?(@tree_2).should be_false
-    File.exists?(File.join(@fixture_dir,'cd')).should be_false
+    File.exists?(@tree_1).should eq false
+    File.exists?(@tree_2).should eq false
+    File.exists?(File.join(@fixture_dir,'cd')).should eq false
   end
 
   describe "alternate prefixes" do
@@ -113,9 +113,9 @@ describe DruidTools::Druid do
       druid.metadata_dir(false).should == File.join(@tree_1,'metadata')
       druid.temp_dir(false).should     == File.join(@tree_1,'temp')
 
-      File.exists?(File.join(@tree_1,'content')).should be_false
-      File.exists?(File.join(@tree_1,'metadata')).should be_false
-      File.exists?(File.join(@tree_1,'temp')).should be_false
+      File.exists?(File.join(@tree_1,'content')).should eq false
+      File.exists?(File.join(@tree_1,'metadata')).should eq false
+      File.exists?(File.join(@tree_1,'temp')).should eq false
     end
 
     it "should create its content directories on the fly" do
@@ -124,9 +124,9 @@ describe DruidTools::Druid do
       druid.metadata_dir.should == File.join(@tree_1,'metadata')
       druid.temp_dir.should     == File.join(@tree_1,'temp')
 
-      File.exists?(File.join(@tree_1,'content')).should be_true
-      File.exists?(File.join(@tree_1,'metadata')).should be_true
-      File.exists?(File.join(@tree_1,'temp')).should be_true
+      File.exists?(File.join(@tree_1,'content')).should eq true
+      File.exists?(File.join(@tree_1,'metadata')).should eq true
+      File.exists?(File.join(@tree_1,'temp')).should eq true
     end
 
     it "should match glob" do

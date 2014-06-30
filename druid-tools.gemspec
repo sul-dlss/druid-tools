@@ -17,5 +17,5 @@ Gem::Specification.new do |gem|
   gem.version       = File.read('VERSION').strip
   
   gem.add_development_dependency 'rake', '>= 10.1.0'
-  gem.add_development_dependency 'rspec', '>= 2.14.0'
+  gem.add_development_dependency 'rspec', '~> 3.0'
 end
