@@ -138,8 +138,6 @@ module DruidTools
       prune_ancestors parent.parent
     end
 
-  protected
-
     # @param [Pathname] outermost_branch The branch at which pruning begins
     # @return [void] Ascend the druid tree and prune empty branches
     def prune_ancestors(outermost_branch)
