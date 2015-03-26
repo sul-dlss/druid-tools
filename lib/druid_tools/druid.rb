@@ -161,10 +161,7 @@ module DruidTools
     #
     #@return [Pathname] the path to the directory, ex: "stacks/.deletes"
     def deletes_dir_pathname
-      prefix = ""
-      prefix = File::SEPARATOR if pathname.to_s[0] == File::SEPARATOR #Preserve the / if we are starting with /
-      
-      return Pathname(prefix+pathname.each_filename.to_a[0]+File::SEPARATOR+@@deletes_directory_name)
+      return Pathname(self.base.to_s + (File::SEPARATOR+@@deletes_directory_name))
     end
     
     def deletes_record_pathname

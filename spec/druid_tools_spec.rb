@@ -271,8 +271,7 @@ describe DruidTools::Druid do
 
       before(:each) do
         #Nil the create records for this context because we're in a known read only one
-        allow(dr1).to receive(:creates_delete_record).and_return(nil)
-        allow(dr2).to receive(:creates_delete_record).and_return(nil)
+        
         dr1.mkdir
         dr2.mkdir
         dr1.prune!
@@ -296,50 +295,45 @@ describe DruidTools::Druid do
     end
 
     it "removes all directories up to the base path when there are no common ancestors" do
-      #Nil the create records for this test
-      allow(dr1).to receive(:creates_delete_record).and_return(nil)
+      #Make sure a delete record is not present
+      expect(dr1.deletes_record_exists?).to be_falsey
       
+      #Nil the create records for this test 
       dr1.mkdir
       dr1.prune!
       expect(File).to_not exist(File.join(workspace, 'cd'))
       expect(File).to exist(workspace)
+      
+      #Make sure a delete record was created
+      expect(dr1.deletes_dir_exists?).to be_truthy
+      expect(dr1.deletes_record_exists?).to be_truthy
     end
 
     it "removes directories with symlinks" do
-      #Nil the create records for this test
-      allow(dr2).to receive(:creates_delete_record).and_return(nil)
+      #Make sure a delete record is not present
+      expect(dr2.deletes_record_exists?).to be_falsey
       
+      #Nil the create records for this test 
       source_dir = File.join workspace, 'src_dir'
       FileUtils.mkdir_p(source_dir)
       dr2.mkdir_with_final_link(source_dir)
       dr2.prune!
       expect(File).to_not exist(dr2.path)
       expect(File).to_not exist(File.join(workspace, 'cd'))
+      
+      #Make sure a delete record was created
+      expect(dr2.deletes_dir_exists?).to be_truthy
+      expect(dr2.deletes_record_exists?).to be_truthy
     end
     
     describe "logging deleted druids" do
       
-        it "should return the top level directory as the parent for .deletes and preserve the leading file seperator if present" do
-          expect(dr2.deletes_dir_pathname.to_s).to eq('/var/.deletes')
-        end
-      
-        describe "tests with overriden deletes .dir pathname" do
-        
-            before :each do
-              expect(dr2).to receive(:pathname).and_return(Pathname('var/ab/123/cd/4567')).at_least(:once)
-            end
-            
             #Purge any paths or delete records created in the test
             after :each do
               #Remove the .deletes dir to clean up
               dr2.deletes_delete_record if dr2.deletes_record_exists?
               FileUtils.rm_rf dr2.deletes_dir_pathname
               
-            end
-      
-            it "should should return the top level directory as the parent for .deletes and not have a leading file seperator if one is not present", :override_deletes_dir do
-              #expect(dr2).to receive(:pathname).and_return(Pathname('var/ab/123/cd/4567')).at_least(:once)
-              expect(dr2.deletes_dir_pathname.to_s).to eq('var/.deletes')
             end
       
             it "should return the path to the .deletes directory as a Pathname" do
@@ -351,7 +345,7 @@ describe DruidTools::Druid do
             end
             
             it "should return the path to the delete record for a druid as top_level/.deletes/druid" do
-               expect(dr2.deletes_record_pathname.to_s.downcase).to eq("var/.deletes/#{dr2.id}")
+               expect(dr2.deletes_record_pathname.to_s).to eq("#{dr2.base}/.deletes/#{dr2.id}")
             end
       
             it "should return false when the .deletes dir is not present on the file system" do
@@ -418,16 +412,6 @@ describe DruidTools::Druid do
               #Should have a new newer deleted record
               expect(File.mtime(dr2.deletes_record_pathname)).to be > time
             end
-            
-            
-            
-      end
-      
-      
     end
-      
- 
-
   end
-
 end
