@@ -6,85 +6,99 @@ Tools to manipulate DRUID trees and content directories
 
 ### Get attributes and paths
 
-    d = DruidTools::Druid.new('druid:ab123cd4567', '/dor/workspace')
-    d.druid
-    => "druid:ab123cd4567"
-    d.id
-    => "ab123cd4567"
-    d.path
-    => "/dor/workspace/ab/123/cd/4567/ab123cd4567"
-    d.content_dir
-    => "/dor/workspace/ab/123/cd/4567/ab123cd4567/content"
-    d.path('content/my_file.jpg')
-    => "/dor/workspace/ab/123/cd/4567/ab123cd4567/content/my_file.jpg"
+```ruby
+d = DruidTools::Druid.new('druid:ab123cd4567', '/dor/workspace')
+d.druid
+=> "druid:ab123cd4567"
+d.id
+=> "ab123cd4567"
+d.path
+=> "/dor/workspace/ab/123/cd/4567/ab123cd4567"
+d.content_dir
+=> "/dor/workspace/ab/123/cd/4567/ab123cd4567/content"
+d.path('content/my_file.jpg')
+=> "/dor/workspace/ab/123/cd/4567/ab123cd4567/content/my_file.jpg"
+```
 
 ### Check whether a druid is valid
 
-    d = DruidTools::Druid.valid?('druid:ab123cd4567')
-    => true
-    d = DruidTools::Druid.valid?('blah')
-    => false
+```ruby
+d = DruidTools::Druid.valid?('druid:ab123cd4567')
+=> true
+d = DruidTools::Druid.valid?('blah')
+=> false
+```
 
 ### Manipulate directories and symlinks
 
-    # Make the druid tree
-    d.mkdir
-    # Make a directory within the druid triee
-    d.mkdir('temp')
-    # Remove a druid tree, but only up to the last shared branch directory
-    d.rmdir
-    # Link content from another source into a druid tree
-    d.mkdir_with_final_link('/some/other/content/location')
+```ruby
+# Make the druid tree
+d.mkdir
+# Make a directory within the druid triee
+d.mkdir('temp')
+# Remove a druid tree, but only up to the last shared branch directory
+d.rmdir
+# Link content from another source into a druid tree
+d.mkdir_with_final_link('/some/other/content/location')
+```
 
 ### Content-specific methods create the relevant directories if they don't exist
 
 Pass `false` as a parameter to prevent directory creation, or `true` (default) to create directories.
 
-    d.content_dir(false)
-    => "/dor/workspace/ab/123/cd/4567/ab123cd4567/content"
-    File.directory?(d.content_dir(false))
-    => false
-    File.directory?(d.content_dir)
-    => true
-    d.metadata_dir(false)
-    => "/dor/workspace/ab/123/cd/4567/ab123cd4567/metadata"
-    d.temp_dir(false)
-    => "/dor/workspace/ab/123/cd/4567/ab123cd4567/temp"
+```ruby
+d.content_dir(false)
+=> "/dor/workspace/ab/123/cd/4567/ab123cd4567/content"
+File.directory?(d.content_dir(false))
+=> false
+File.directory?(d.content_dir)
+=> true
+d.metadata_dir(false)
+=> "/dor/workspace/ab/123/cd/4567/ab123cd4567/metadata"
+d.temp_dir(false)
+=> "/dor/workspace/ab/123/cd/4567/ab123cd4567/temp"
+```
 
 ### Locate existing content within the druid tree
 
-    # In the correct directory
-    d.find_metadata('contentMetadata.xml')
-    => "/dor/workspace/ab/123/cd/4567/ab123cd4567/metadata/contentMetadata.xml"
+```ruby
+# In the correct directory
+d.find_metadata('contentMetadata.xml')
+=> "/dor/workspace/ab/123/cd/4567/ab123cd4567/metadata/contentMetadata.xml"
 
-    # In other known previous locations, for backward compatibility
-    d.find_metadata('contentMetadata.xml')
-    => "/dor/workspace/ab/123/cd/4567/ab123cd4567/contentMetadata.xml"
+# In other known previous locations, for backward compatibility
+d.find_metadata('contentMetadata.xml')
+=> "/dor/workspace/ab/123/cd/4567/ab123cd4567/contentMetadata.xml"
 
-    d.find_metadata('contentMetadata.xml')
-    => "/dor/workspace/ab/123/cd/4567/contentMetadata.xml"
+d.find_metadata('contentMetadata.xml')
+=> "/dor/workspace/ab/123/cd/4567/contentMetadata.xml"
 
-    d.find_content('this/file/does/not/exist.jpg')
-    => nil
+d.find_content('this/file/does/not/exist.jpg')
+=> nil
+```
 
 ### Pruning: removes leaves of tree up to non-empty branches
 
-    d1 = DruidTools::Druid.new 'druid:cd456ef7890', '/workspace'
-    d1.mkdir
-    d2 = DruidTools::Druid.new 'druid:cd456gh1234', '/workspace'
-    d2.mkdir
+```ruby
+d1 = DruidTools::Druid.new 'druid:cd456ef7890', '/workspace'
+d1.mkdir
+d2 = DruidTools::Druid.new 'druid:cd456gh1234', '/workspace'
+d2.mkdir
 
-    # /workspace/cd/456/gh/1234/cd456gh1234 pruned down to /workspace/cd/456
-    # /workspace/cd/456/ef/7890/cd456ef7890 left intact
-    d2.prune!
+# /workspace/cd/456/gh/1234/cd456gh1234 pruned down to /workspace/cd/456
+# /workspace/cd/456/ef/7890/cd456ef7890 left intact
+d2.prune!
+```
 
 ### Stacks and Purl compatible Druid.  All files at the leaf directories
 
-    pd = DruidTools::PurlDruid.new 'druid:ab123cd4567', '/purl'
-    pd.path
-    => "/purl/ab/123/cd/4567"
-    pd.content_dir
-    => "/purl/ab/123/cd/4567"
+```ruby
+pd = DruidTools::PurlDruid.new 'druid:ab123cd4567', '/purl'
+pd.path
+=> "/purl/ab/123/cd/4567"
+pd.content_dir
+=> "/purl/ab/123/cd/4567"
+```
 
 ### History
 
