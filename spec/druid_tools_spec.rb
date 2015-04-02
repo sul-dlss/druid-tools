@@ -40,54 +40,54 @@ describe DruidTools::Druid do
       [true,         'druid:zz943vx1492']
     ]
     tests.each do |exp, dru|
-      DruidTools::Druid.valid?(dru).should == exp
+      expect(DruidTools::Druid.valid?(dru)).to eq(exp)
     end
   end
 
   it "provides the full druid including the prefix" do
-    DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir).druid.should == 'druid:cd456ef7890'
-    DruidTools::Druid.new('cd456ef7890',@fixture_dir).druid.should == 'druid:cd456ef7890'
+    expect(DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir).druid).to eq('druid:cd456ef7890')
+    expect(DruidTools::Druid.new('cd456ef7890',@fixture_dir).druid).to eq('druid:cd456ef7890')
   end
 
   it "extracts the ID from the stem" do
-    DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir).id.should == 'cd456ef7890'
-    DruidTools::Druid.new('cd456ef7890',@fixture_dir).id.should == 'cd456ef7890'
+    expect(DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir).id).to eq('cd456ef7890')
+    expect(DruidTools::Druid.new('cd456ef7890',@fixture_dir).id).to eq('cd456ef7890')
   end
 
   it "raises an exception if the druid is invalid" do
-    lambda { DruidTools::Druid.new('nondruid:cd456ef7890',@fixture_dir) }.should raise_error(ArgumentError)
-    lambda { DruidTools::Druid.new('druid:cd4567ef890',@fixture_dir) }.should raise_error(ArgumentError)
+    expect { DruidTools::Druid.new('nondruid:cd456ef7890',@fixture_dir) }.to raise_error(ArgumentError)
+    expect { DruidTools::Druid.new('druid:cd4567ef890',@fixture_dir) }.to raise_error(ArgumentError)
   end
 
   it "builds a druid tree from a druid" do
     druid = DruidTools::Druid.new(@druid_1,@fixture_dir)
-    druid.tree.should == ['cd','456','ef','7890','cd456ef7890']
-    druid.path.should == @tree_1
+    expect(druid.tree).to eq(['cd','456','ef','7890','cd456ef7890'])
+    expect(druid.path).to eq(@tree_1)
   end
 
   it "creates and destroys druid directories" do
-    File.exists?(@tree_1).should eq false
-    File.exists?(@tree_2).should eq false
+    expect(File.exists?(@tree_1)).to eq false
+    expect(File.exists?(@tree_2)).to eq false
 
     druid_1 = DruidTools::Druid.new(@druid_1,@fixture_dir)
     druid_2 = DruidTools::Druid.new(@druid_2,@fixture_dir)
 
     druid_1.mkdir
-    File.exists?(@tree_1).should eq true
-    File.exists?(@tree_2).should eq false
+    expect(File.exists?(@tree_1)).to eq true
+    expect(File.exists?(@tree_2)).to eq false
 
     druid_2.mkdir
-    File.exists?(@tree_1).should eq true
-    File.exists?(@tree_2).should eq true
+    expect(File.exists?(@tree_1)).to eq true
+    expect(File.exists?(@tree_2)).to eq true
 
     druid_2.rmdir
-    File.exists?(@tree_1).should eq true
-    File.exists?(@tree_2).should eq false
+    expect(File.exists?(@tree_1)).to eq true
+    expect(File.exists?(@tree_2)).to eq false
 
     druid_1.rmdir
-    File.exists?(@tree_1).should eq false
-    File.exists?(@tree_2).should eq false
-    File.exists?(File.join(@fixture_dir,'cd')).should eq false
+    expect(File.exists?(@tree_1)).to eq false
+    expect(File.exists?(@tree_2)).to eq false
+    expect(File.exists?(File.join(@fixture_dir,'cd'))).to eq false
   end
 
   describe "alternate prefixes" do
@@ -100,39 +100,39 @@ describe DruidTools::Druid do
     end
 
     it "handles alternate prefixes" do
-      lambda { DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir) }.should raise_error(ArgumentError)
-      DruidTools::Druid.new('sulair:cd456ef7890',@fixture_dir).id.should == 'cd456ef7890'
-      DruidTools::Druid.new('cd456ef7890',@fixture_dir).druid.should == 'sulair:cd456ef7890'
+      expect { DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir) }.to raise_error(ArgumentError)
+      expect(DruidTools::Druid.new('sulair:cd456ef7890',@fixture_dir).id).to eq('cd456ef7890')
+      expect(DruidTools::Druid.new('cd456ef7890',@fixture_dir).druid).to eq('sulair:cd456ef7890')
     end
   end
 
   describe "content directories" do
     it "knows where its content goes" do
       druid = DruidTools::Druid.new(@druid_1,@fixture_dir)
-      druid.content_dir(false).should  == File.join(@tree_1,'content')
-      druid.metadata_dir(false).should == File.join(@tree_1,'metadata')
-      druid.temp_dir(false).should     == File.join(@tree_1,'temp')
+      expect(druid.content_dir(false)).to  eq(File.join(@tree_1,'content'))
+      expect(druid.metadata_dir(false)).to eq(File.join(@tree_1,'metadata'))
+      expect(druid.temp_dir(false)).to     eq(File.join(@tree_1,'temp'))
 
-      File.exists?(File.join(@tree_1,'content')).should eq false
-      File.exists?(File.join(@tree_1,'metadata')).should eq false
-      File.exists?(File.join(@tree_1,'temp')).should eq false
+      expect(File.exists?(File.join(@tree_1,'content'))).to eq false
+      expect(File.exists?(File.join(@tree_1,'metadata'))).to eq false
+      expect(File.exists?(File.join(@tree_1,'temp'))).to eq false
     end
 
     it "creates its content directories on the fly" do
       druid = DruidTools::Druid.new(@druid_1,@fixture_dir)
-      druid.content_dir.should  == File.join(@tree_1,'content')
-      druid.metadata_dir.should == File.join(@tree_1,'metadata')
-      druid.temp_dir.should     == File.join(@tree_1,'temp')
+      expect(druid.content_dir).to  eq(File.join(@tree_1,'content'))
+      expect(druid.metadata_dir).to eq(File.join(@tree_1,'metadata'))
+      expect(druid.temp_dir).to     eq(File.join(@tree_1,'temp'))
 
-      File.exists?(File.join(@tree_1,'content')).should eq true
-      File.exists?(File.join(@tree_1,'metadata')).should eq true
-      File.exists?(File.join(@tree_1,'temp')).should eq true
+      expect(File.exists?(File.join(@tree_1,'content'))).to eq true
+      expect(File.exists?(File.join(@tree_1,'metadata'))).to eq true
+      expect(File.exists?(File.join(@tree_1,'temp'))).to eq true
     end
 
     it "matches glob" do
       druid = DruidTools::Druid.new(@druid_1,@fixture_dir)
       druid.mkdir
-      Dir.glob(File.join(File.dirname(druid.path), DruidTools::Druid::glob)).size.should == 1
+      expect(Dir.glob(File.join(File.dirname(druid.path), DruidTools::Druid::glob)).size).to eq(1)
     end
   end
 
@@ -145,31 +145,31 @@ describe DruidTools::Druid do
     it "finds content in content directories" do
       location = @druid.content_dir
       File.open(File.join(location,'someContent'),'w') { |f| f.write 'This is the content' }
-      @druid.find_content('someContent').should == File.join(location,'someContent')
+      expect(@druid.find_content('someContent')).to eq(File.join(location,'someContent'))
     end
 
     it "finds content in the root directory" do
       location = @druid.path(nil,true)
       File.open(File.join(location,'someContent'),'w') { |f| f.write 'This is the content' }
-      @druid.find_content('someContent').should == File.join(location,'someContent')
+      expect(@druid.find_content('someContent')).to eq(File.join(location,'someContent'))
     end
 
     it "finds content in the leaf directory" do
       location = File.expand_path('..',@druid.path(nil,true))
       File.open(File.join(location,'someContent'),'w') { |f| f.write 'This is the content' }
-      @druid.find_content('someContent').should == File.join(location,'someContent')
+      expect(@druid.find_content('someContent')).to eq(File.join(location,'someContent'))
     end
 
     it "does not find content in the wrong content directory" do
       location = @druid.metadata_dir
       File.open(File.join(location,'someContent'),'w') { |f| f.write 'This is the content' }
-      @druid.find_content('someContent').should be_nil
+      expect(@druid.find_content('someContent')).to be_nil
     end
 
     it "does not find content in a higher-up directory" do
       location = File.expand_path('../..',@druid.path(nil,true))
       File.open(File.join(location,'someContent'),'w') { |f| f.write 'This is the content' }
-      @druid.find_content('someContent').should be_nil
+      expect(@druid.find_content('someContent')).to be_nil
     end
 
     it "finds a filelist in the content directory" do
@@ -177,7 +177,7 @@ describe DruidTools::Druid do
       @filelist.each do |filename|
         location.join(filename).open('w') { |f| f.write "This is #{filename}" }
       end
-      @druid.find_filelist_parent('content',@filelist).should == location
+      expect(@druid.find_filelist_parent('content',@filelist)).to eq(location)
     end
 
     it "finds a filelist in the root directory" do
@@ -185,7 +185,7 @@ describe DruidTools::Druid do
       @filelist.each do |filename|
         location.join(filename).open('w') { |f| f.write "This is #{filename}" }
       end
-      @druid.find_filelist_parent('content',@filelist).should == location
+      expect(@druid.find_filelist_parent('content',@filelist)).to eq(location)
     end
 
     it "finds a filelist in the leaf directory" do
@@ -193,18 +193,18 @@ describe DruidTools::Druid do
       @filelist.each do |filename|
         location.join(filename).open('w') { |f| f.write "This is #{filename}" }
       end
-      @druid.find_filelist_parent('content',@filelist).should == location
+      expect(@druid.find_filelist_parent('content',@filelist)).to eq(location)
     end
 
     it "raises an exception if the first file in the filelist is not found" do
       location = Pathname(@druid.content_dir)
-      lambda{@druid.find_filelist_parent('content',@filelist)}.should raise_exception(/content dir not found for 'someFile1' when searching/)
+      expect{@druid.find_filelist_parent('content',@filelist)}.to raise_exception(/content dir not found for 'someFile1' when searching/)
     end
 
     it "raises an exception if any other file in the filelist is not found" do
       location = Pathname(@druid.content_dir)
       location.join(@filelist.first).open('w') { |f| f.write "This is #{@filelist.first}" }
-      lambda{@druid.find_filelist_parent('content',@filelist)}.should raise_exception(/File 'someFile2' not found/)
+      expect{@druid.find_filelist_parent('content',@filelist)}.to raise_exception(/File 'someFile2' not found/)
     end
 
   end
@@ -213,7 +213,7 @@ describe DruidTools::Druid do
     it "raises SameContentExistsError if the directory already exists" do
       druid_2 = DruidTools::Druid.new(@druid_2,@fixture_dir)
       druid_2.mkdir
-      lambda { druid_2.mkdir }.should raise_error(DruidTools::SameContentExistsError)
+      expect { druid_2.mkdir }.to raise_error(DruidTools::SameContentExistsError)
     end
 
     it "raises DifferentContentExistsError if a link already exists in the workspace for this druid" do
@@ -221,7 +221,7 @@ describe DruidTools::Druid do
       FileUtils.mkdir_p(source_dir)
       dr = DruidTools::Druid.new(@druid_2,@fixture_dir)
       dr.mkdir_with_final_link(source_dir)
-      lambda { dr.mkdir }.should raise_error(DruidTools::DifferentContentExistsError)
+      expect { dr.mkdir }.to raise_error(DruidTools::DifferentContentExistsError)
     end
   end
 
@@ -236,19 +236,19 @@ describe DruidTools::Druid do
     it "creates a druid tree in the workspace with the final directory being a link to the passed in source" do
       @dr.mkdir_with_final_link(@source_dir)
 
-      File.should be_symlink(@dr.path)
-      File.readlink(@tree_2).should == @source_dir
+      expect(File).to be_symlink(@dr.path)
+      expect(File.readlink(@tree_2)).to eq(@source_dir)
     end
 
     it "does not error out if the link to source already exists" do
       @dr.mkdir_with_final_link(@source_dir)
-      File.should be_symlink(@dr.path)
-      File.readlink(@tree_2).should == @source_dir
+      expect(File).to be_symlink(@dr.path)
+      expect(File.readlink(@tree_2)).to eq(@source_dir)
     end
 
     it "raises DifferentContentExistsError if a directory already exists in the workspace for this druid" do
       @dr.mkdir(@fixture_dir)
-      lambda { @dr.mkdir_with_final_link(@source_di) }.should raise_error(DruidTools::DifferentContentExistsError)
+      expect { @dr.mkdir_with_final_link(@source_di) }.to raise_error(DruidTools::DifferentContentExistsError)
     end
     
     
