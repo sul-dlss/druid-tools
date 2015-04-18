@@ -210,7 +210,7 @@ module DruidTools
     # @param [Pathname] outermost_branch The branch at which pruning begins
     # @return [void] Ascend the druid tree and prune empty branches
     def prune_ancestors(outermost_branch)
-      while outermost_branch.children.size == 0
+      while outermost_branch.exist? && outermost_branch.children.size == 0
         outermost_branch.rmdir
         outermost_branch = outermost_branch.parent
         break if  outermost_branch == base_pathname
