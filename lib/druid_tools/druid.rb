@@ -138,47 +138,47 @@ module DruidTools
       parent = this_path.parent
       parent.rmtree if parent.exist? && parent != base_pathname
       prune_ancestors parent.parent
-      creates_delete_record 
+      creates_delete_record
     end
-    
-    #This function checks for existance of a .deletes dir one level into the path (ex: stacks/.deletes or purl/.deletes).  
+
+    #This function checks for existance of a .deletes dir one level into the path (ex: stacks/.deletes or purl/.deletes).
     #If the directory does not exist, it is created.  If the directory exists, check to see if the current druid has an entry there, if it does delete it.
-    #This is done because a file might be deleted, then republishing, then deleted we again, and we want to log the most recent delete.  
+    #This is done because a file might be deleted, then republishing, then deleted we again, and we want to log the most recent delete.
     #
     #@raises [Errno::EACCES] If write priveleges are denied
     #
-    #@return [void] 
+    #@return [void]
     def prep_deletes_dir
-      #Check for existences of deletes dir 
+      #Check for existences of deletes dir
       create_deletes_dir if !deletes_dir_exists?
       #In theory we could return true after this step (if it fires), since if there was no deletes dir then the file can't be present in the dir
 
-      #Check to see if this druid has been deleted before, meaning file currently exists 
+      #Check to see if this druid has been deleted before, meaning file currently exists
       deletes_delete_record if deletes_record_exists?
     end
-    
+
     #Provide the location for the .deletes directory in the tree
     #
     #@return [Pathname] the path to the directory, ex: "stacks/.deletes"
     def deletes_dir_pathname
       return Pathname(self.base.to_s + (File::SEPARATOR+@@deletes_directory_name))
     end
-    
+
     def deletes_record_pathname
       return Pathname(deletes_dir_pathname.to_s + File::SEPARATOR + self.id)
     end
-    
-    #Using the deletes directory path supplied by deletes_dir_pathname, this function determines if this directory exists 
+
+    #Using the deletes directory path supplied by deletes_dir_pathname, this function determines if this directory exists
     #
     #@return [Boolean] true if if exists, false if it does not
     def deletes_dir_exists?
-      return File.directory?(deletes_dir_pathname) 
+      return File.directory?(deletes_dir_pathname)
     end
-    
+
     def deletes_record_exists?
       return File.exists?(deletes_dir_pathname.to_s + File::SEPARATOR + self.id)
     end
-    
+
     #Creates the deletes dir using the path supplied by deletes_dir_pathname
     #
     #@raises [Errno::EACCES] If write priveleges are denied
@@ -187,7 +187,7 @@ module DruidTools
     def create_deletes_dir
       FileUtils::mkdir_p deletes_dir_pathname
     end
-    
+
     #Deletes the delete record if it currently exists.  This is done to change the filed created, not just last modified time, on the system
     #
     #@raises [Errno::EACCES] If write priveleges are denied
@@ -196,7 +196,7 @@ module DruidTools
     def deletes_delete_record
       FileUtils.rm(deletes_record_pathname) if deletes_record_exists? #thrown in to prevent an  Errno::ENOENT if you call this on something without a delete record
     end
-    
+
     #Creates an empty (pointer) file using the object's id in the .deletes dir
     #
     #@raises [Errno::EACCES] If write priveleges are denied
@@ -206,7 +206,7 @@ module DruidTools
       prep_deletes_dir
       FileUtils.touch(deletes_record_pathname)
     end
-    
+
     # @param [Pathname] outermost_branch The branch at which pruning begins
     # @return [void] Ascend the druid tree and prune empty branches
     def prune_ancestors(outermost_branch)
@@ -215,7 +215,6 @@ module DruidTools
         outermost_branch = outermost_branch.parent
         break if  outermost_branch == base_pathname
       end
-    rescue
     end
 
   end
