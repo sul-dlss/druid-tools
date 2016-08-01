@@ -5,3 +5,6 @@ rvm:
   - 2.1.2
   - 2.2.4
   - 2.3.1
+
+before_install:
+  - gem install bundler # the default version of bundler for ruby 2.1 is out of date.
