@@ -15,7 +15,10 @@ Gem::Specification.new do |gem|
   gem.name          = 'druid-tools'
   gem.require_paths = ['lib']
   gem.version       = File.read('VERSION').strip
-  
+
   gem.add_development_dependency 'rake', '>= 10.1.0'
   gem.add_development_dependency 'rspec', '~> 3.0'
+  gem.add_development_dependency 'coveralls'
+  gem.add_development_dependency 'rubocop', '~> 0.50.0' # avoid code churn due to rubocop changes
+  gem.add_development_dependency 'rubocop-rspec', '~> 1.18.0' # avoid code churn due to rubocop-rspec changes
 end

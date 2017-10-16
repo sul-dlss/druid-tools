@@ -267,7 +267,7 @@ describe DruidTools::Druid do
     it "throws error on misconfig when base dir cannot be created" do
       dir = '/some/dir/that/does/not/exist' # we don't have permissions to create
       dr0 = DruidTools::Druid.new @druid_1, dir
-      expect {dr0.prune!}.to raise_error()
+      expect {dr0.prune!}.to raise_error(StandardError)
       expect(File).to_not exist(dir)
     end
 

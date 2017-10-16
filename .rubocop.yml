@@ -1,0 +1,41 @@
+inherit_from: .rubocop_todo.yml
+
+# Turn on RSpec cops
+require: rubocop-rspec
+
+AllCops:
+  DisplayCopNames: true
+  Include:
+    - 'Rakefile'
+  Exclude:
+    - 'Gemfile.lock'
+    - '**/*.md'
+    - 'vendor/**/*' # avoid running rubocop on travis cached bundler
+
+# --- Layout ---
+
+# --- Lint ---
+
+# --- Metrics ---
+
+# because this isn't 1994
+Metrics/LineLength:
+  Max: 167 # would like to reduce this to 120
+
+# --- Naming ---
+
+Naming/FileName:
+  Exclude:
+    - Gemfile
+    - druid-tools.gemspec
+    - lib/druid-tools.rb
+
+# -- Performance ---
+
+# --- RSpec ---
+
+# --- Style ---
+
+# because ' vs " isn't a big deal for readability or maintainability or execution time
+Style/StringLiterals:
+  Enabled: false
