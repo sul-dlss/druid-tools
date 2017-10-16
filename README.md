@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.org/sul-dlss/druid-tools.svg?branch=delete-records)](https://travis-ci.org/sul-dlss/druid-tools)
+[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/druid-tools/badge.svg?branch=master)](https://coveralls.io/github/sul-dlss/druid-tools?branch=master)
+[![Dependency Status](https://gemnasium.com/badges/github.com/sul-dlss/druid-tools.svg)](https://gemnasium.com/github.com/sul-dlss/druid-tools)
+[![Gem Version](https://badge.fury.io/rb/druid-tools.svg)](https://badge.fury.io/rb/druid-tools)
+
 # Druid::Tools
 
 Tools to manipulate DRUID trees and content directories
