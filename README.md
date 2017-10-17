@@ -104,16 +104,3 @@ pd.path
 pd.content_dir
 => "/purl/ab/123/cd/4567"
 ```
-
-### History
-
-- <b>0.3.0</b> - Added #prune method. Added AccessDruid for stacks and purl access
-- <b>0.2.6</b> - Fixed VERSION warning message, and documentation cleanup
-- <b>0.2.5</b> - Added glob pattern as DruidTools::Druid.glob
-- <b>0.2.4</b> - Allow non-String as .new parameter and added InvalidDruidError
-- <b>0.2.3</b> - Fine tune behavior of find_filelist_parent
-- <b>0.2.2</b> - Added find_filelist_parent method allowing search for a set of files
-- <b>0.2.1</b> - Do not error out during symlink creation if it already exists
-- <b>0.2.0</b> - Added DruidTools::Druid.valid?
-- <b>0.1.0</b> - Additional support for alternate content locations
-- <b>0.0.1</b> - Initial Release
