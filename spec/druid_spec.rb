@@ -16,7 +16,7 @@ describe DruidTools::Druid do
     FileUtils.rm_rf(File.join(@fixture_dir,'cd'))
   end
 
-  it "validate druid strings using the valid? class method" do
+  it ".valid? correctly validates druid strings" do
     tests = [
       # Expected     Input druid
       [true,         'druid:aa000bb0001'],
@@ -44,28 +44,28 @@ describe DruidTools::Druid do
     end
   end
 
-  it "provides the full druid including the prefix" do
+  it "#druid provides the full druid including the prefix" do
     expect(DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir).druid).to eq('druid:cd456ef7890')
     expect(DruidTools::Druid.new('cd456ef7890',@fixture_dir).druid).to eq('druid:cd456ef7890')
   end
 
-  it "extracts the ID from the stem" do
+  it "#id extracts the ID from the stem" do
     expect(DruidTools::Druid.new('druid:cd456ef7890',@fixture_dir).id).to eq('cd456ef7890')
     expect(DruidTools::Druid.new('cd456ef7890',@fixture_dir).id).to eq('cd456ef7890')
   end
 
-  it "raises an exception if the druid is invalid" do
+  it "#new raises exception if the druid is invalid" do
     expect { DruidTools::Druid.new('nondruid:cd456ef7890',@fixture_dir) }.to raise_error(ArgumentError)
     expect { DruidTools::Druid.new('druid:cd4567ef890',@fixture_dir) }.to raise_error(ArgumentError)
   end
 
-  it "builds a druid tree from a druid" do
+  it "#tree builds a druid tree from a druid" do
     druid = DruidTools::Druid.new(@druid_1,@fixture_dir)
     expect(druid.tree).to eq(['cd','456','ef','7890','cd456ef7890'])
     expect(druid.path).to eq(@tree_1)
   end
 
-  it "creates and destroys druid directories" do
+  it "#mkdir, #rmdir create and destroy druid directories" do
     expect(File.exists?(@tree_1)).to eq false
     expect(File.exists?(@tree_2)).to eq false
 
