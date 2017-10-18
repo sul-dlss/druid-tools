@@ -6,11 +6,17 @@ module DruidTools
     @@deletes_directory_name = '.deletes'
     attr_accessor :druid, :base
 
+    # See https://consul.stanford.edu/pages/viewpage.action?title=SURI+2.0+Specification&spaceKey=chimera
+    # character class matching allowed letters in a druid suitable for use in regex (no aeioul)
+    STRICT_LET = '[b-df-hjkmnp-tv-z]'.freeze
+
     class << self
       attr_accessor :prefix
 
+      # @param [boolean] true if validation should be more restrictive about allowed letters (no aeioul)
       # @return [Regexp] matches druid:aa111aa1111 or aa111aa1111
-      def pattern
+      def pattern(strict=false)
+        return /\A(?:#{self.prefix}:)?(#{STRICT_LET}{2})(\d{3})(#{STRICT_LET}{2})(\d{4})\z/ if strict
         /\A(?:#{self.prefix}:)?([a-z]{2})(\d{3})([a-z]{2})(\d{4})\z/
       end
 
@@ -19,10 +25,16 @@ module DruidTools
         "{#{self.prefix}:,}[a-z][a-z][0-9][0-9][0-9][a-z][a-z][0-9][0-9][0-9][0-9]"
       end
 
+      # @return [String] suitable for use in [Dir#glob]
+      def strict_glob
+        "{#{self.prefix}:,}#{STRICT_LET}#{STRICT_LET}[0-9][0-9][0-9]#{STRICT_LET}#{STRICT_LET}[0-9][0-9][0-9][0-9]"
+      end
+
       # @param [String] druid id
+      # @param [boolean] true if validation should be more restrictive about allowed letters (no aeioul)
       # @return [Boolean] true if druid matches pattern; otherwise false
-      def valid?(druid)
-        return druid =~ pattern ? true : false
+      def valid?(druid, strict=false)
+        druid =~ pattern(strict) ? true : false
       end
 
     end
@@ -41,13 +53,14 @@ module DruidTools
     end
 
     # @param druid [String] A valid druid
+    # @param [boolean] true if validation should be more restrictive about allowed letters (no aeioul)
     # @param base [String] The directory used by #path
-    def initialize(druid, base='.')
+    def initialize(druid, base='.', strict=false)
       druid = druid.to_s unless druid.is_a? String
-      unless self.class.valid?(druid)
+      unless self.class.valid?(druid, strict)
         raise ArgumentError, "Invalid DRUID: '#{druid}'"
       end
-      druid = [self.class.prefix,druid].join(':') unless druid =~ /^#{self.class.prefix}:/
+      druid = [self.class.prefix, druid].join(':') unless druid =~ /^#{self.class.prefix}:/
       @base = base
       @druid = druid
     end

@@ -12,31 +12,74 @@ describe DruidTools::Druid do
     FileUtils.rm_rf(File.join(@fixture_dir, 'cd'))
   end
 
-  it ".valid? correctly validates druid strings" do
-    tests = [
-      # Expected     Input druid
-      [true,         'druid:aa000bb0001'],
-      [true,         'aa000bb0001'],
-      [false,        'Aa000bb0001'],
-      [false,        "xxx\naa000bb0001"],
-      [false,        'aaa000bb0001'],
-      [false,        'druidX:aa000bb0001'],
-      [false,        ':aa000bb0001'],
-      [true,         'aa123bb1234'],
-      [false,        'aa12bb1234'],
-      [false,        'aa1234bb1234'],
-      [false,        'aa123bb123'],
-      [false,        'aa123bb12345'],
-      [false,        'a123bb1234'],
-      [false,        'aaa123bb1234'],
-      [false,        'aa123b1234'],
-      [false,        'aa123bbb1234'],
-      [false,        'druid:az918AZ9381'.upcase],
-      [true,         'druid:az918AZ9381'.downcase],
-      [true,         'druid:zz943vx1492']
-    ]
-    tests.each do |exp, dru|
-      expect(DruidTools::Druid.valid?(dru)).to eq(exp)
+  context '.valid?' do
+    # also tests .pattern
+    it "correctly validates druid strings" do
+      tests = [
+        # Expected     Input druid
+        [true,         'druid:aa000bb0001'],
+        [true,         'aa000bb0001'],
+        [false,        'Aa000bb0001'],
+        [false,        "xxx\naa000bb0001"],
+        [false,        'aaa000bb0001'],
+        [false,        'druidX:aa000bb0001'],
+        [false,        ':aa000bb0001'],
+        [true,         'aa123bb1234'],
+        [false,        'aa12bb1234'],
+        [false,        'aa1234bb1234'],
+        [false,        'aa123bb123'],
+        [false,        'aa123bb12345'],
+        [false,        'a123bb1234'],
+        [false,        'aaa123bb1234'],
+        [false,        'aa123b1234'],
+        [false,        'aa123bbb1234'],
+        [false,        'druid:az918AZ9381'.upcase],
+        [true,         'druid:az918AZ9381'.downcase],
+        [true,         'druid:zz943vx1492']
+      ]
+      tests.each do |exp, dru|
+        expect(DruidTools::Druid.valid?(dru)).to eq(exp)
+        expect(DruidTools::Druid.valid?(dru, false)).to eq(exp)
+      end
+    end
+    context 'strict' do
+      it "correctly validates druid strings" do
+        tests = [
+          # Expected     Input druid
+          [false,        'aa000aa0000'],
+          [false,        'ee000ee0000'],
+          [false,        'ii000ii0000'],
+          [false,        'oo000oo0000'],
+          [false,        'uu000uu0000'],
+          [false,        'll000ll0000'],
+          [false,        'aa000bb0001'],
+          [true,         'druid:dd000bb0001'],
+          [false,        'druid:aa000bb0001'],
+          [true,         'dd000bb0001'],
+          [false,        'Dd000bb0001'],
+          [false,        "xxx\ndd000bb0001"],
+          [false,        'ddd000bb0001'],
+          [false,        'druidX:dd000bb0001'],
+          [false,        ':dd000bb0001'],
+          [true,         'cc123bb1234'],
+          [false,        'aa123bb1234'],
+          [false,        'dd12bb1234'],
+          [false,        'dd1234bb1234'],
+          [false,        'dd123bb123'],
+          [false,        'dd123bb12345'],
+          [false,        'd123bb1234'],
+          [false,        'ddd123bb1234'],
+          [false,        'dd123b1234'],
+          [false,        'dd123bbb1234'],
+          [false,        'druid:bz918BZ9381'.upcase],
+          [true,         'druid:bz918BZ9381'.downcase],
+          [false,        'druid:az918AZ9381'.downcase],
+          [true,         'druid:zz943vx1492']
+        ]
+        tests.each do |exp, dru|
+          expect(DruidTools::Druid.valid?(dru, true)).to eq(exp)
+        end
+      end
     end
   end
 
@@ -50,9 +93,15 @@ describe DruidTools::Druid do
     expect(DruidTools::Druid.new('cd456ef7890', @fixture_dir).id).to eq('cd456ef7890')
   end
 
-  it "#new raises exception if the druid is invalid" do
-    expect { DruidTools::Druid.new('nondruid:cd456ef7890', @fixture_dir) }.to raise_error(ArgumentError)
-    expect { DruidTools::Druid.new('druid:cd4567ef890', @fixture_dir) }.to raise_error(ArgumentError)
+  context '#new' do
+    it "raises exception if the druid is invalid" do
+      expect { DruidTools::Druid.new('nondruid:cd456ef7890', fixture_dir) }.to raise_error(ArgumentError)
+      expect { DruidTools::Druid.new('druid:cd4567ef890', fixture_dir) }.to raise_error(ArgumentError)
+    end
+    it "takes strict argument" do
+      DruidTools::Druid.new(strictly_valid_druid, fixture_dir, true)
+      expect { DruidTools::Druid.new(valid_druid, fixture_dir, true) }.to raise_error(ArgumentError)
+    end
   end
 
   it "#tree builds a druid tree from a druid" do
@@ -129,6 +178,14 @@ describe DruidTools::Druid do
       druid = DruidTools::Druid.new(@druid_1, @fixture_dir)
       druid.mkdir
       expect(Dir.glob(File.join(File.dirname(druid.path), DruidTools::Druid::glob)).size).to eq(1)
+    end
+    it "matches strict_glob" do
+      druid = DruidTools::Druid.new(@druid_1, @fixture_dir)
+      druid.mkdir
+      expect(Dir.glob(File.join(File.dirname(druid.path), DruidTools::Druid::strict_glob)).size).to eq(0)
+      druid = DruidTools::Druid.new(@druid_2, @fixture_dir)
+      druid.mkdir
+      expect(Dir.glob(File.join(File.dirname(druid.path), DruidTools::Druid::strict_glob)).size).to eq(1)
     end
   end
 
