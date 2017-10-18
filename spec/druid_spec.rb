@@ -1,7 +1,3 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-#puts $LOAD_PATH.join("\n")
-require 'tmpdir'
-
 describe DruidTools::Druid do
   before (:all) do
     @fixture_dir = File.expand_path("../fixtures", __FILE__)
