@@ -1,15 +1,12 @@
 describe DruidTools::Druid do
-  before (:all) do
-    @fixture_dir = File.expand_path("../fixtures", __FILE__)
-    FileUtils.rm_rf(File.join(@fixture_dir, 'cd'))
-    @druid_1 = 'druid:cd456ef7890'
-    @tree_1 = File.join(@fixture_dir, 'cd/456/ef/7890/cd456ef7890')
-    @druid_2 = 'druid:cd456gh1234'
-    @tree_2 = File.join(@fixture_dir, 'cd/456/gh/1234/cd456gh1234')
-  end
+  let(:fixture_dir) { File.expand_path("../fixtures", __FILE__) }
+  let(:druid_str) { 'druid:cd456ef7890' }
+  let(:tree_1) { File.join(fixture_dir, 'cd/456/ef/7890/cd456ef7890') }
+  let(:strictly_valid_druid_str) { 'druid:cd456gh1234' }
+  let(:tree_2) { File.join(fixture_dir, 'cd/456/gh/1234/cd456gh1234') }
 
   after(:each) do
-    FileUtils.rm_rf(File.join(@fixture_dir, 'cd'))
+    FileUtils.rm_rf(File.join(fixture_dir, 'cd'))
   end
 
   context '.valid?' do
@@ -84,13 +81,13 @@ describe DruidTools::Druid do
   end
 
   it "#druid provides the full druid including the prefix" do
-    expect(DruidTools::Druid.new('druid:cd456ef7890', @fixture_dir).druid).to eq('druid:cd456ef7890')
-    expect(DruidTools::Druid.new('cd456ef7890', @fixture_dir).druid).to eq('druid:cd456ef7890')
+    expect(DruidTools::Druid.new('druid:cd456ef7890', fixture_dir).druid).to eq('druid:cd456ef7890')
+    expect(DruidTools::Druid.new('cd456ef7890', fixture_dir).druid).to eq('druid:cd456ef7890')
   end
 
   it "#id extracts the ID from the stem" do
-    expect(DruidTools::Druid.new('druid:cd456ef7890', @fixture_dir).id).to eq('cd456ef7890')
-    expect(DruidTools::Druid.new('cd456ef7890', @fixture_dir).id).to eq('cd456ef7890')
+    expect(DruidTools::Druid.new('druid:cd456ef7890', fixture_dir).id).to eq('cd456ef7890')
+    expect(DruidTools::Druid.new('cd456ef7890', fixture_dir).id).to eq('cd456ef7890')
   end
 
   context '#new' do
@@ -99,40 +96,40 @@ describe DruidTools::Druid do
       expect { DruidTools::Druid.new('druid:cd4567ef890', fixture_dir) }.to raise_error(ArgumentError)
     end
     it "takes strict argument" do
-      DruidTools::Druid.new(strictly_valid_druid, fixture_dir, true)
-      expect { DruidTools::Druid.new(valid_druid, fixture_dir, true) }.to raise_error(ArgumentError)
+      DruidTools::Druid.new(strictly_valid_druid_str, fixture_dir, true)
+      expect { DruidTools::Druid.new(druid_str, fixture_dir, true) }.to raise_error(ArgumentError)
     end
   end
 
   it "#tree builds a druid tree from a druid" do
-    druid = DruidTools::Druid.new(@druid_1, @fixture_dir)
+    druid = DruidTools::Druid.new(druid_str, fixture_dir)
     expect(druid.tree).to eq(['cd', '456', 'ef', '7890', 'cd456ef7890'])
-    expect(druid.path).to eq(@tree_1)
+    expect(druid.path).to eq(tree_1)
   end
 
   it "#mkdir, #rmdir create and destroy druid directories" do
-    expect(File.exists?(@tree_1)).to eq false
-    expect(File.exists?(@tree_2)).to eq false
+    expect(File.exists?(tree_1)).to eq false
+    expect(File.exists?(tree_2)).to eq false
 
-    druid_1 = DruidTools::Druid.new(@druid_1, @fixture_dir)
-    druid_2 = DruidTools::Druid.new(@druid_2, @fixture_dir)
+    druid_1 = DruidTools::Druid.new(druid_str, fixture_dir)
+    druid_2 = DruidTools::Druid.new(strictly_valid_druid_str, fixture_dir)
 
     druid_1.mkdir
-    expect(File.exists?(@tree_1)).to eq true
-    expect(File.exists?(@tree_2)).to eq false
+    expect(File.exists?(tree_1)).to eq true
+    expect(File.exists?(tree_2)).to eq false
 
     druid_2.mkdir
-    expect(File.exists?(@tree_1)).to eq true
-    expect(File.exists?(@tree_2)).to eq true
+    expect(File.exists?(tree_1)).to eq true
+    expect(File.exists?(tree_2)).to eq true
 
     druid_2.rmdir
-    expect(File.exists?(@tree_1)).to eq true
-    expect(File.exists?(@tree_2)).to eq false
+    expect(File.exists?(tree_1)).to eq true
+    expect(File.exists?(tree_2)).to eq false
 
     druid_1.rmdir
-    expect(File.exists?(@tree_1)).to eq false
-    expect(File.exists?(@tree_2)).to eq false
-    expect(File.exists?(File.join(@fixture_dir, 'cd'))).to eq false
+    expect(File.exists?(tree_1)).to eq false
+    expect(File.exists?(tree_2)).to eq false
+    expect(File.exists?(File.join(fixture_dir, 'cd'))).to eq false
   end
 
   describe "alternate prefixes" do
@@ -145,172 +142,166 @@ describe DruidTools::Druid do
     end
 
     it "handles alternate prefixes" do
-      expect { DruidTools::Druid.new('druid:cd456ef7890', @fixture_dir) }.to raise_error(ArgumentError)
-      expect(DruidTools::Druid.new('sulair:cd456ef7890', @fixture_dir).id).to eq('cd456ef7890')
-      expect(DruidTools::Druid.new('cd456ef7890', @fixture_dir).druid).to eq('sulair:cd456ef7890')
+      expect { DruidTools::Druid.new('druid:cd456ef7890', fixture_dir) }.to raise_error(ArgumentError)
+      expect(DruidTools::Druid.new('sulair:cd456ef7890', fixture_dir).id).to eq('cd456ef7890')
+      expect(DruidTools::Druid.new('cd456ef7890', fixture_dir).druid).to eq('sulair:cd456ef7890')
     end
   end
 
   describe "content directories" do
     it "knows where its content goes" do
-      druid = DruidTools::Druid.new(@druid_1, @fixture_dir)
-      expect(druid.content_dir(false)).to  eq(File.join(@tree_1, 'content'))
-      expect(druid.metadata_dir(false)).to eq(File.join(@tree_1, 'metadata'))
-      expect(druid.temp_dir(false)).to     eq(File.join(@tree_1, 'temp'))
+      druid = DruidTools::Druid.new(druid_str, fixture_dir)
+      expect(druid.content_dir(false)).to eq(File.join(tree_1, 'content'))
+      expect(druid.metadata_dir(false)).to eq(File.join(tree_1, 'metadata'))
+      expect(druid.temp_dir(false)).to eq(File.join(tree_1, 'temp'))
 
-      expect(File.exists?(File.join(@tree_1, 'content'))).to eq false
-      expect(File.exists?(File.join(@tree_1, 'metadata'))).to eq false
-      expect(File.exists?(File.join(@tree_1, 'temp'))).to eq false
+      expect(File.exists?(File.join(tree_1, 'content'))).to eq false
+      expect(File.exists?(File.join(tree_1, 'metadata'))).to eq false
+      expect(File.exists?(File.join(tree_1, 'temp'))).to eq false
     end
 
     it "creates its content directories on the fly" do
-      druid = DruidTools::Druid.new(@druid_1, @fixture_dir)
-      expect(druid.content_dir).to  eq(File.join(@tree_1, 'content'))
-      expect(druid.metadata_dir).to eq(File.join(@tree_1, 'metadata'))
-      expect(druid.temp_dir).to     eq(File.join(@tree_1, 'temp'))
+      druid = DruidTools::Druid.new(druid_str, fixture_dir)
+      expect(druid.content_dir).to eq(File.join(tree_1, 'content'))
+      expect(druid.metadata_dir).to eq(File.join(tree_1, 'metadata'))
+      expect(druid.temp_dir).to eq(File.join(tree_1, 'temp'))
 
-      expect(File.exists?(File.join(@tree_1, 'content'))).to eq true
-      expect(File.exists?(File.join(@tree_1, 'metadata'))).to eq true
-      expect(File.exists?(File.join(@tree_1, 'temp'))).to eq true
+      expect(File.exists?(File.join(tree_1, 'content'))).to eq true
+      expect(File.exists?(File.join(tree_1, 'metadata'))).to eq true
+      expect(File.exists?(File.join(tree_1, 'temp'))).to eq true
     end
 
     it "matches glob" do
-      druid = DruidTools::Druid.new(@druid_1, @fixture_dir)
+      druid = DruidTools::Druid.new(druid_str, fixture_dir)
       druid.mkdir
       expect(Dir.glob(File.join(File.dirname(druid.path), DruidTools::Druid::glob)).size).to eq(1)
     end
     it "matches strict_glob" do
-      druid = DruidTools::Druid.new(@druid_1, @fixture_dir)
+      druid = DruidTools::Druid.new(druid_str, fixture_dir)
       druid.mkdir
       expect(Dir.glob(File.join(File.dirname(druid.path), DruidTools::Druid::strict_glob)).size).to eq(0)
-      druid = DruidTools::Druid.new(@druid_2, @fixture_dir)
+      druid = DruidTools::Druid.new(strictly_valid_druid_str, fixture_dir)
       druid.mkdir
       expect(Dir.glob(File.join(File.dirname(druid.path), DruidTools::Druid::strict_glob)).size).to eq(1)
     end
   end
 
   describe "content discovery" do
-    before :all do
-      @druid = DruidTools::Druid.new(@druid_1, @fixture_dir)
-      @filelist = %w(1 2 3 4).collect { |num| "someFile#{num}" }
-    end
+    let(:druid) { DruidTools::Druid.new(druid_str, fixture_dir) }
+    let(:filelist) { %w(1 2 3 4).collect { |num| "someFile#{num}" } }
 
     it "finds content in content directories" do
-      location = @druid.content_dir
+      location = druid.content_dir
       File.open(File.join(location, 'someContent'), 'w') { |f| f.write 'This is the content' }
-      expect(@druid.find_content('someContent')).to eq(File.join(location, 'someContent'))
+      expect(druid.find_content('someContent')).to eq(File.join(location, 'someContent'))
     end
 
     it "finds content in the root directory" do
-      location = @druid.path(nil, true)
+      location = druid.path(nil, true)
       File.open(File.join(location, 'someContent'), 'w') { |f| f.write 'This is the content' }
-      expect(@druid.find_content('someContent')).to eq(File.join(location, 'someContent'))
+      expect(druid.find_content('someContent')).to eq(File.join(location, 'someContent'))
     end
 
     it "finds content in the leaf directory" do
-      location = File.expand_path('..', @druid.path(nil, true))
+      location = File.expand_path('..', druid.path(nil, true))
       File.open(File.join(location, 'someContent'), 'w') { |f| f.write 'This is the content' }
-      expect(@druid.find_content('someContent')).to eq(File.join(location, 'someContent'))
+      expect(druid.find_content('someContent')).to eq(File.join(location, 'someContent'))
     end
 
     it "does not find content in the wrong content directory" do
-      location = @druid.metadata_dir
+      location = druid.metadata_dir
       File.open(File.join(location, 'someContent'), 'w') { |f| f.write 'This is the content' }
-      expect(@druid.find_content('someContent')).to be_nil
+      expect(druid.find_content('someContent')).to be_nil
     end
 
     it "does not find content in a higher-up directory" do
-      location = File.expand_path('../..', @druid.path(nil, true))
+      location = File.expand_path('../..', druid.path(nil, true))
       File.open(File.join(location, 'someContent'), 'w') { |f| f.write 'This is the content' }
-      expect(@druid.find_content('someContent')).to be_nil
+      expect(druid.find_content('someContent')).to be_nil
     end
 
     it "finds a filelist in the content directory" do
-      location = Pathname(@druid.content_dir)
-      @filelist.each do |filename|
+      location = Pathname(druid.content_dir)
+      filelist.each do |filename|
         location.join(filename).open('w') { |f| f.write "This is #{filename}" }
       end
-      expect(@druid.find_filelist_parent('content', @filelist)).to eq(location)
+      expect(druid.find_filelist_parent('content', filelist)).to eq(location)
     end
 
     it "finds a filelist in the root directory" do
-      location = Pathname(@druid.path(nil, true))
-      @filelist.each do |filename|
+      location = Pathname(druid.path(nil, true))
+      filelist.each do |filename|
         location.join(filename).open('w') { |f| f.write "This is #{filename}" }
       end
-      expect(@druid.find_filelist_parent('content', @filelist)).to eq(location)
+      expect(druid.find_filelist_parent('content', filelist)).to eq(location)
     end
 
     it "finds a filelist in the leaf directory" do
-      location = Pathname(File.expand_path('..', @druid.path(nil, true)))
-      @filelist.each do |filename|
+      location = Pathname(File.expand_path('..', druid.path(nil, true)))
+      filelist.each do |filename|
         location.join(filename).open('w') { |f| f.write "This is #{filename}" }
       end
-      expect(@druid.find_filelist_parent('content', @filelist)).to eq(location)
+      expect(druid.find_filelist_parent('content', filelist)).to eq(location)
     end
 
     it "raises an exception if the first file in the filelist is not found" do
-      location = Pathname(@druid.content_dir)
-      expect{@druid.find_filelist_parent('content', @filelist)}.to raise_exception(/content dir not found for 'someFile1' when searching/)
+      location = Pathname(druid.content_dir)
+      expect{druid.find_filelist_parent('content', filelist)}.to raise_exception(/content dir not found for 'someFile1' when searching/)
     end
 
     it "raises an exception if any other file in the filelist is not found" do
-      location = Pathname(@druid.content_dir)
-      location.join(@filelist.first).open('w') { |f| f.write "This is #{@filelist.first}" }
-      expect{@druid.find_filelist_parent('content', @filelist)}.to raise_exception(/File 'someFile2' not found/)
+      location = Pathname(druid.content_dir)
+      location.join(filelist.first).open('w') { |f| f.write "This is #{filelist.first}" }
+      expect{druid.find_filelist_parent('content', filelist)}.to raise_exception(/File 'someFile2' not found/)
     end
-
   end
 
   describe "#mkdir error handling" do
     it "raises SameContentExistsError if the directory already exists" do
-      druid_2 = DruidTools::Druid.new(@druid_2, @fixture_dir)
-      druid_2.mkdir
-      expect { druid_2.mkdir }.to raise_error(DruidTools::SameContentExistsError)
+      druid_obj = DruidTools::Druid.new(strictly_valid_druid_str, fixture_dir)
+      druid_obj.mkdir
+      expect { druid_obj.mkdir }.to raise_error(DruidTools::SameContentExistsError)
     end
 
     it "raises DifferentContentExistsError if a link already exists in the workspace for this druid" do
       source_dir = '/tmp/content_dir'
       FileUtils.mkdir_p(source_dir)
-      dr = DruidTools::Druid.new(@druid_2, @fixture_dir)
+      dr = DruidTools::Druid.new(strictly_valid_druid_str, fixture_dir)
       dr.mkdir_with_final_link(source_dir)
       expect { dr.mkdir }.to raise_error(DruidTools::DifferentContentExistsError)
     end
   end
 
   describe "#mkdir_with_final_link" do
+    let(:source_dir) { '/tmp/content_dir' }
+    let(:druid_obj){ DruidTools::Druid.new(strictly_valid_druid_str, fixture_dir) }
 
     before(:each) do
-      @source_dir = '/tmp/content_dir'
-      FileUtils.mkdir_p(@source_dir)
-      @dr = DruidTools::Druid.new(@druid_2, @fixture_dir)
+      FileUtils.mkdir_p(source_dir)
     end
 
     it "creates a druid tree in the workspace with the final directory being a link to the passed in source" do
-      @dr.mkdir_with_final_link(@source_dir)
-      expect(File).to be_symlink(@dr.path)
-      expect(File.readlink(@tree_2)).to eq(@source_dir)
+      druid_obj.mkdir_with_final_link(source_dir)
+      expect(File).to be_symlink(druid_obj.path)
+      expect(File.readlink(tree_2)).to eq(source_dir)
     end
 
     it "does not error out if the link to source already exists" do
-      @dr.mkdir_with_final_link(@source_dir)
-      expect(File).to be_symlink(@dr.path)
-      expect(File.readlink(@tree_2)).to eq(@source_dir)
+      druid_obj.mkdir_with_final_link(source_dir)
+      expect(File).to be_symlink(druid_obj.path)
+      expect(File.readlink(tree_2)).to eq(source_dir)
     end
 
     it "raises DifferentContentExistsError if a directory already exists in the workspace for this druid" do
-      @dr.mkdir(@fixture_dir)
-      expect { @dr.mkdir_with_final_link(@source_di) }.to raise_error(DruidTools::DifferentContentExistsError)
+      druid_obj.mkdir(fixture_dir)
+      expect { druid_obj.mkdir_with_final_link(source_dir) }.to raise_error(DruidTools::DifferentContentExistsError)
     end
-
   end
 
   describe "#prune!" do
-
     let(:workspace) { Dir.mktmpdir }
-
-    let(:dr1) { DruidTools::Druid.new @druid_1, workspace }
-    let(:dr2) { DruidTools::Druid.new @druid_2, workspace }
+    let(:dr1) { DruidTools::Druid.new(druid_str, workspace) }
+    let(:dr2) { DruidTools::Druid.new(strictly_valid_druid_str, workspace) }
     let(:pathname1) { dr1.pathname }
 
     after(:each) do
@@ -319,14 +310,14 @@ describe DruidTools::Druid do
 
     it "throws error on misconfig when base dir cannot be created" do
       dir = '/some/dir/that/does/not/exist' # we don't have permissions to create
-      dr0 = DruidTools::Druid.new @druid_1, dir
+      dr0 = DruidTools::Druid.new(druid_str, dir)
       expect {dr0.prune!}.to raise_error(StandardError)
       expect(File).to_not exist(dir)
     end
 
     it "does not throw error when base can be created" do
       subdir = File.join(Dir.mktmpdir, 'some', 'nonexistant', 'subdir')      # but this one *can* be created
-      dr2 = DruidTools::Druid.new @druid_2, subdir
+      dr2 = DruidTools::Druid.new(strictly_valid_druid_str, subdir)
       expect {dr2.prune!}.not_to raise_error()
       expect(File).to exist(subdir)
     end
@@ -468,7 +459,7 @@ describe DruidTools::Druid do
         dr2.creates_delete_record
         time = Time.now
         expect(File.mtime(dr2.deletes_record_pathname)).to be <= time
-        sleep(1) #force a one second pause in case the machine is fast (as in not some old Commodore64), since mtime only goes down to the second
+        sleep(1) #force a one second pause in case the machine is fast, since mtime only goes down to the second
 
         dr2.creates_delete_record
         #Should have a new newer deleted record
