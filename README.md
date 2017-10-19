@@ -7,7 +7,28 @@
 
 Tools to manipulate DRUID trees and content directories
 
+Note that druid syntax is defined in consul (and druids are issued by the SURI service).  See https://consul.stanford.edu/pages/viewpage.action?title=SURI+2.0+Specification&spaceKey=chimera
+
+Druid format:
+
+    bbdddbbdddd (two letters two digits two letters 4 digits)
+
+Letters must be lowercase, and must not include A, E, I, O, U or L.  (capitals for easier distinction here)
+We often use vowels in our test data, and this code base has allowed vowels historically (though not
+uppercase).  We now recommend setting the strict argument to true whenever using this code to build
+DruidTools::Druid objects or to validate druid identifier strings.
+
 ## Usage
+
+### with strict argument
+
+```ruby
+d = DruidTools::Druid.new('druid:ab123cd4567', '/dor/workspace', true) # no aeioul
+=> ArgumentError: Invalid DRUID: 'druid:ab123cd4567'
+d = DruidTools::Druid.new('druid:bb123cd4567', '/dor/workspace', true)
+d.druid
+=> "druid:bb123cd4567"
+```
 
 ### Get attributes and paths
 
@@ -32,6 +53,13 @@ d = DruidTools::Druid.valid?('druid:ab123cd4567')
 => true
 d = DruidTools::Druid.valid?('blah')
 => false
+d = DruidTools::Druid.valid?('druid:ab123cd4567', true) # strict validation: no aeioul
+=> false
+d = DruidTools::Druid.valid?('druid:ab123cd4567', false)
+=> true
+d = DruidTools::Druid.valid?('druid:bb123cd4567', true)
+=> true
+
 ```
 
 ### Manipulate directories and symlinks
@@ -85,9 +113,9 @@ d.find_content('this/file/does/not/exist.jpg')
 ### Pruning: removes leaves of tree up to non-empty branches
 
 ```ruby
-d1 = DruidTools::Druid.new 'druid:cd456ef7890', '/workspace'
+d1 = DruidTools::Druid.new('druid:cd456ef7890', '/workspace')
 d1.mkdir
-d2 = DruidTools::Druid.new 'druid:cd456gh1234', '/workspace'
+d2 = DruidTools::Druid.new('druid:cd456gh1234', '/workspace')
 d2.mkdir
 
 # /workspace/cd/456/gh/1234/cd456gh1234 pruned down to /workspace/cd/456
@@ -98,7 +126,7 @@ d2.prune!
 ### Stacks and Purl compatible Druid.  All files at the leaf directories
 
 ```ruby
-pd = DruidTools::PurlDruid.new 'druid:ab123cd4567', '/purl'
+pd = DruidTools::PurlDruid.new('druid:ab123cd4567', '/purl')
 pd.path
 => "/purl/ab/123/cd/4567"
 pd.content_dir
