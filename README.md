@@ -11,7 +11,7 @@ Note that druid syntax is defined in consul (and druids are issued by the SURI s
 
 Druid format:
 
-    bbdddbbdddd (two letters two digits two letters 4 digits)
+    bbdddbbdddd (two letters three digits two letters 4 digits)
 
 Letters must be lowercase, and must not include A, E, I, O, U or L.  (capitals for easier distinction here)
 We often use vowels in our test data, and this code base has allowed vowels historically (though not
