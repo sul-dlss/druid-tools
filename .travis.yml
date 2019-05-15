@@ -2,11 +2,9 @@ notifications:
   email: false
 
 rvm:
-  - 2.1.2
-  - 2.2.4
-  - 2.3.1
-  - 2.4.2
-  - 2.5.3
+  - 2.4.6
+  - 2.5.5
+  - 2.6.3
 
 # script, expressed as an array, is necessary for 'bundle exec coveralls push' to work locally
 script:
