@@ -108,7 +108,7 @@ module DruidTools
       found_dir = directories.find { |pathname| pathname.join(filelist[0]).exist? }
       raise "#{type} dir not found for '#{filelist[0]}' when searching '#{search_dir}'" if found_dir.nil?
       filelist.each do |filename|
-        raise "File '#{filename}' not found in #{type} dir s'#{found_dir}'" unless found_dir.join(filename).exist?
+        raise "File '#{filename}' not found in #{type} dir '#{found_dir}'" unless found_dir.join(filename).exist?
       end
       found_dir
     end
