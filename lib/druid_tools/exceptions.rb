@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module DruidTools
-  class SameContentExistsError < Exception; end
-  class DifferentContentExistsError < Exception; end
-  class InvalidDruidError < Exception; end
+  class SameContentExistsError < RuntimeError; end
+  class DifferentContentExistsError < RuntimeError; end
+  class InvalidDruidError < RuntimeError; end
 end

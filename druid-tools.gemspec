@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 
 Gem::Specification.new do |gem|
   gem.authors       = ['Michael Klein', 'Darren Hardy']
@@ -9,16 +9,16 @@ Gem::Specification.new do |gem|
   gem.licenses      = ['ALv2', 'Stanford University Libraries']
   gem.has_rdoc      = true
 
-  gem.files         = `git ls-files`.split($\)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+  gem.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
+  gem.executables   = gem.files.grep(%r{^bin/}).map { |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^spec/})
   gem.name          = 'druid-tools'
   gem.require_paths = ['lib']
   gem.version       = File.read('VERSION').strip
 
+  gem.add_development_dependency 'coveralls'
   gem.add_development_dependency 'rake', '>= 10.1.0'
   gem.add_development_dependency 'rspec', '~> 3.0'
-  gem.add_development_dependency 'coveralls'
-  gem.add_development_dependency 'rubocop', '~> 0.50.0' # avoid code churn due to rubocop changes
-  gem.add_development_dependency 'rubocop-rspec', '~> 1.18.0' # avoid code churn due to rubocop-rspec changes
+  gem.add_development_dependency 'rubocop', '~> 0.70.0'
+  gem.add_development_dependency 'rubocop-rspec', '~> 1.33.0'
 end

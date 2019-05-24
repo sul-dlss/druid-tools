@@ -5,8 +5,8 @@ require: rubocop-rspec
 
 AllCops:
   DisplayCopNames: true
-  Include:
-    - 'Rakefile'
+#  Include:
+#    - 'Rakefile'
   Exclude:
     - 'Gemfile.lock'
     - '**/*.md'
@@ -22,6 +22,10 @@ AllCops:
 Metrics/LineLength:
   Max: 167 # would like to reduce this to 120
 
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*_spec.rb'
+
 # --- Naming ---
 
 Naming/FileName:
@@ -35,7 +39,3 @@ Naming/FileName:
 # --- RSpec ---
 
 # --- Style ---
-
-# because ' vs " isn't a big deal for readability or maintainability or execution time
-Style/StringLiterals:
-  Enabled: false
