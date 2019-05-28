@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DruidTools
   require 'druid_tools/version'
   require 'druid_tools/druid'
