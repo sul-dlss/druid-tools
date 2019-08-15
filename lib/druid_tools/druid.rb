@@ -2,9 +2,13 @@
 
 require 'pathname'
 require 'fileutils'
+require 'deprecation'
 
 module DruidTools
   class Druid
+    extend Deprecation
+    self.deprecation_horizon = 'druid-tools 3.0.0'
+
     attr_accessor :druid, :base
 
     # See https://consul.stanford.edu/pages/viewpage.action?title=SURI+2.0+Specification&spaceKey=chimera
@@ -122,6 +126,7 @@ module DruidTools
       FileUtils.mkdir_p(real_path)
       FileUtils.ln_s(source, new_path, force: true)
     end
+    deprecation_deprecate :mkdir_with_final_link
 
     def rmdir(extra = nil)
       parts = tree
@@ -137,6 +142,7 @@ module DruidTools
         parts.pop
       end
     end
+    deprecation_deprecate :rmdir
 
     def pathname
       Pathname path
@@ -152,6 +158,7 @@ module DruidTools
       parent.rmtree if parent.exist? && parent != base_pathname
       prune_ancestors parent.parent
     end
+    deprecation_deprecate :prune!
 
     # @param [Pathname] outermost_branch The branch at which pruning begins
     # @return [void] Ascend the druid tree and prune empty branches
@@ -162,5 +169,6 @@ module DruidTools
         break if outermost_branch == base_pathname
       end
     end
+    deprecation_deprecate :prune_ancestors
   end
 end

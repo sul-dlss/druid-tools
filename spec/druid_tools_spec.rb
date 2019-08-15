@@ -110,6 +110,7 @@ RSpec.describe DruidTools::Druid do
   end
 
   it '#mkdir, #rmdir create and destroy druid directories' do
+    allow(Deprecation).to receive(:warn)
     expect(File.exist?(tree1)).to eq false
     expect(File.exist?(tree2)).to eq false
 
@@ -269,7 +270,10 @@ RSpec.describe DruidTools::Druid do
       source_dir = '/tmp/content_dir'
       FileUtils.mkdir_p(source_dir)
       dr = described_class.new(strictly_valid_druid_str, fixture_dir)
-      dr.mkdir_with_final_link(source_dir)
+      new_path = dr.path
+      FileUtils.mkdir_p(File.expand_path('..', new_path))
+      FileUtils.ln_s(source_dir, new_path, force: true)
+
       expect { dr.mkdir }.to raise_error(DruidTools::DifferentContentExistsError)
     end
   end
@@ -279,6 +283,7 @@ RSpec.describe DruidTools::Druid do
     let(:druid_obj) { described_class.new(strictly_valid_druid_str, fixture_dir) }
 
     before do
+      allow(Deprecation).to receive(:warn)
       FileUtils.mkdir_p(source_dir)
     end
 
@@ -305,6 +310,10 @@ RSpec.describe DruidTools::Druid do
     let(:dr1) { described_class.new(druid_str, workspace) }
     let(:dr2) { described_class.new(strictly_valid_druid_str, workspace) }
     let(:pathname1) { dr1.pathname }
+
+    before do
+      allow(Deprecation).to receive(:warn)
+    end
 
     after do
       FileUtils.remove_entry workspace

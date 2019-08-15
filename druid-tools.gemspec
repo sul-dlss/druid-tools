@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
   gem.version       = File.read('VERSION').strip
 
+  gem.add_dependency 'deprecation'
   gem.add_development_dependency 'coveralls'
   gem.add_development_dependency 'rake', '>= 10.1.0'
   gem.add_development_dependency 'rspec', '~> 3.0'
