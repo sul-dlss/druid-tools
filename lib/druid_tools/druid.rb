@@ -41,16 +41,28 @@ module DruidTools
     end
     self.prefix = 'druid'
 
-    %i[content metadata temp].each do |dir_type|
-      class_eval <<-EOC
-        def #{dir_type}_dir(create=true)
-          path("#{dir_type}",create)
-        end
+    def content_dir(create = true)
+      path('content', create)
+    end
 
-        def find_#{dir_type}(path)
-          find(:#{dir_type},path)
-        end
-      EOC
+    def metadata_dir(create = true)
+      path('metadata', create)
+    end
+
+    def temp_dir(create = true)
+      path('temp', create)
+    end
+
+    def find_content(path)
+      find(:content, path)
+    end
+
+    def find_metadata(path)
+      find(:metadata, path)
+    end
+
+    def find_temp(path)
+      find(:temp, path)
     end
 
     # @param druid [String] A valid druid
