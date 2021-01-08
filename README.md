@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/sul-dlss/druid-tools.svg?branch=delete-records)](https://travis-ci.org/sul-dlss/druid-tools)
-[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/druid-tools/badge.svg?branch=master)](https://coveralls.io/github/sul-dlss/druid-tools?branch=master)
+[![Build Status](https://travis-ci.com/sul-dlss/druid-tools.svg?branch=main)](https://travis-ci.com/sul-dlss/druid-tools)
+[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/druid-tools/badge.svg?branch=main)](https://coveralls.io/github/sul-dlss/druid-tools?branch=main)
 [![Gem Version](https://badge.fury.io/rb/druid-tools.svg)](https://badge.fury.io/rb/druid-tools)
 
 # Druid::Tools
