@@ -82,7 +82,7 @@ module DruidTools
     end
 
     def id
-      @druid.scan(self.class.pattern).flatten.join('')
+      @druid.scan(self.class.pattern).flatten.join
     end
 
     def tree
