@@ -41,6 +41,7 @@ RSpec.describe DruidTools::Druid do
         expect(described_class.valid?(dru, false)).to eq(exp)
       end
     end
+
     context 'with strict validation' do
       it 'correctly validates druid strings' do
         tests = [
@@ -97,6 +98,7 @@ RSpec.describe DruidTools::Druid do
       expect { described_class.new('nondruid:cd456ef7890', fixture_dir) }.to raise_error(ArgumentError)
       expect { described_class.new('druid:cd4567ef890', fixture_dir) }.to raise_error(ArgumentError)
     end
+
     it 'takes strict argument' do
       described_class.new(strictly_valid_druid_str, fixture_dir, true)
       expect { described_class.new(druid_str, fixture_dir, true) }.to raise_error(ArgumentError)
@@ -111,28 +113,28 @@ RSpec.describe DruidTools::Druid do
 
   it '#mkdir, #rmdir create and destroy druid directories' do
     allow(Deprecation).to receive(:warn)
-    expect(File.exist?(tree1)).to eq false
-    expect(File.exist?(tree2)).to eq false
+    expect(File.exist?(tree1)).to be false
+    expect(File.exist?(tree2)).to be false
 
     druid1 = described_class.new(druid_str, fixture_dir)
     druid2 = described_class.new(strictly_valid_druid_str, fixture_dir)
 
     druid1.mkdir
-    expect(File.exist?(tree1)).to eq true
-    expect(File.exist?(tree2)).to eq false
+    expect(File.exist?(tree1)).to be true
+    expect(File.exist?(tree2)).to be false
 
     druid2.mkdir
-    expect(File.exist?(tree1)).to eq true
-    expect(File.exist?(tree2)).to eq true
+    expect(File.exist?(tree1)).to be true
+    expect(File.exist?(tree2)).to be true
 
     druid2.rmdir
-    expect(File.exist?(tree1)).to eq true
-    expect(File.exist?(tree2)).to eq false
+    expect(File.exist?(tree1)).to be true
+    expect(File.exist?(tree2)).to be false
 
     druid1.rmdir
-    expect(File.exist?(tree1)).to eq false
-    expect(File.exist?(tree2)).to eq false
-    expect(File.exist?(File.join(fixture_dir, 'cd'))).to eq false
+    expect(File.exist?(tree1)).to be false
+    expect(File.exist?(tree2)).to be false
+    expect(File.exist?(File.join(fixture_dir, 'cd'))).to be false
   end
 
   describe 'alternate prefixes' do
@@ -158,9 +160,9 @@ RSpec.describe DruidTools::Druid do
       expect(druid.metadata_dir(false)).to eq(File.join(tree1, 'metadata'))
       expect(druid.temp_dir(false)).to eq(File.join(tree1, 'temp'))
 
-      expect(File.exist?(File.join(tree1, 'content'))).to eq false
-      expect(File.exist?(File.join(tree1, 'metadata'))).to eq false
-      expect(File.exist?(File.join(tree1, 'temp'))).to eq false
+      expect(File.exist?(File.join(tree1, 'content'))).to be false
+      expect(File.exist?(File.join(tree1, 'metadata'))).to be false
+      expect(File.exist?(File.join(tree1, 'temp'))).to be false
     end
 
     it 'creates its content directories on the fly' do
@@ -169,9 +171,9 @@ RSpec.describe DruidTools::Druid do
       expect(druid.metadata_dir).to eq(File.join(tree1, 'metadata'))
       expect(druid.temp_dir).to eq(File.join(tree1, 'temp'))
 
-      expect(File.exist?(File.join(tree1, 'content'))).to eq true
-      expect(File.exist?(File.join(tree1, 'metadata'))).to eq true
-      expect(File.exist?(File.join(tree1, 'temp'))).to eq true
+      expect(File.exist?(File.join(tree1, 'content'))).to be true
+      expect(File.exist?(File.join(tree1, 'metadata'))).to be true
+      expect(File.exist?(File.join(tree1, 'temp'))).to be true
     end
 
     it 'matches glob' do
@@ -179,6 +181,7 @@ RSpec.describe DruidTools::Druid do
       druid.mkdir
       expect(Dir.glob(File.join(File.dirname(druid.path), described_class.glob)).size).to eq(1)
     end
+
     it 'matches strict_glob' do
       druid = described_class.new(druid_str, fixture_dir)
       druid.mkdir
@@ -195,31 +198,31 @@ RSpec.describe DruidTools::Druid do
 
     it 'finds content in content directories' do
       location = druid.content_dir
-      File.open(File.join(location, 'someContent'), 'w') { |f| f.write 'This is the content' }
+      File.write(File.join(location, 'someContent'), 'This is the content')
       expect(druid.find_content('someContent')).to eq(File.join(location, 'someContent'))
     end
 
     it 'finds content in the root directory' do
       location = druid.path(nil, true)
-      File.open(File.join(location, 'someContent'), 'w') { |f| f.write 'This is the content' }
+      File.write(File.join(location, 'someContent'), 'This is the content')
       expect(druid.find_content('someContent')).to eq(File.join(location, 'someContent'))
     end
 
     it 'finds content in the leaf directory' do
       location = File.expand_path('..', druid.path(nil, true))
-      File.open(File.join(location, 'someContent'), 'w') { |f| f.write 'This is the content' }
+      File.write(File.join(location, 'someContent'), 'This is the content')
       expect(druid.find_content('someContent')).to eq(File.join(location, 'someContent'))
     end
 
     it 'does not find content in the wrong content directory' do
       location = druid.metadata_dir
-      File.open(File.join(location, 'someContent'), 'w') { |f| f.write 'This is the content' }
+      File.write(File.join(location, 'someContent'), 'This is the content')
       expect(druid.find_content('someContent')).to be_nil
     end
 
     it 'does not find content in a higher-up directory' do
       location = File.expand_path('../..', druid.path(nil, true))
-      File.open(File.join(location, 'someContent'), 'w') { |f| f.write 'This is the content' }
+      File.write(File.join(location, 'someContent'), 'This is the content')
       expect(druid.find_content('someContent')).to be_nil
     end
 

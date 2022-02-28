@@ -7,7 +7,9 @@ Gem::Specification.new do |gem|
   gem.summary       = 'Tools to manipulate DRUID trees and content directories'
   gem.homepage      = 'http://github.com/sul-dlss/druid-tools'
   gem.licenses      = ['ALv2', 'Stanford University Libraries']
-  gem.has_rdoc      = true
+  gem.metadata['rubygems_mfa_required'] = 'true'
+
+  gem.required_ruby_version = '>= 3.0'
 
   gem.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
   gem.executables   = gem.files.grep(%r{^bin/}).map { |f| File.basename(f) }
@@ -20,6 +22,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'coveralls'
   gem.add_development_dependency 'rake', '>= 10.1.0'
   gem.add_development_dependency 'rspec', '~> 3.0'
-  gem.add_development_dependency 'rubocop', '~> 0.70.0'
-  gem.add_development_dependency 'rubocop-rspec', '~> 1.33.0'
+  gem.add_development_dependency 'rubocop'
+  gem.add_development_dependency 'rubocop-rspec'
 end
