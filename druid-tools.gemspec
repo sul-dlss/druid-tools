@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.licenses      = ['ALv2', 'Stanford University Libraries']
   gem.metadata['rubygems_mfa_required'] = 'true'
 
-  gem.required_ruby_version = '>= 3.0'
+  gem.required_ruby_version = '>= 2.7'
 
   gem.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
   gem.executables   = gem.files.grep(%r{^bin/}).map { |f| File.basename(f) }
