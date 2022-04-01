@@ -15,6 +15,10 @@ module DruidTools
       mkdir(extra) if create && !File.exist?(result)
       result
     end
+
+    def pruning_base
+      pathname
+    end
   end
 
   PurlDruid = AccessDruid

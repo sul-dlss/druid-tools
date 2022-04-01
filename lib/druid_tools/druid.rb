@@ -164,11 +164,13 @@ module DruidTools
       Pathname base
     end
 
+    def pruning_base
+      pathname.parent
+    end
+
     def prune!
-      this_path = pathname
-      parent = this_path.parent
-      parent.rmtree if parent.exist? && parent != base_pathname
-      prune_ancestors parent.parent
+      pruning_base.rmtree if pruning_base.exist? && pruning_base != base_pathname
+      prune_ancestors pruning_base.parent
     end
     deprecation_deprecate :prune!
 
