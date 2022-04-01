@@ -6,6 +6,8 @@ RSpec.describe DruidTools::Druid do
   let(:tree1) { File.join(fixture_dir, 'cd/456/ef/7890/cd456ef7890') }
   let(:strictly_valid_druid_str) { 'druid:cd456gh1234' }
   let(:tree2) { File.join(fixture_dir, 'cd/456/gh/1234/cd456gh1234') }
+  let(:access_druid_str) { 'druid:cd456ef9999' }
+  let(:tree3) { File.join(fixture_dir, 'cd/456/ef/9999') }
 
   after do
     FileUtils.rm_rf(File.join(fixture_dir, 'cd'))
@@ -83,6 +85,12 @@ RSpec.describe DruidTools::Druid do
     end
   end
 
+  describe '#pruning_base' do
+    subject(:path) { described_class.new(druid_str).pruning_base }
+
+    it { is_expected.to eq(Pathname.new('./cd/456/ef/7890')) }
+  end
+
   it '#druid provides the full druid including the prefix' do
     expect(described_class.new('druid:cd456ef7890', fixture_dir).druid).to eq('druid:cd456ef7890')
     expect(described_class.new('cd456ef7890', fixture_dir).druid).to eq('druid:cd456ef7890')
@@ -111,29 +119,45 @@ RSpec.describe DruidTools::Druid do
     expect(druid.path).to eq(tree1)
   end
 
-  it '#mkdir, #rmdir create and destroy druid directories' do
+  it '#mkdir creates, and #rmdir destroys, *only* the expected druid directory' do
     allow(Deprecation).to receive(:warn)
     expect(File.exist?(tree1)).to be false
     expect(File.exist?(tree2)).to be false
+    expect(File.exist?(tree3)).to be false
 
     druid1 = described_class.new(druid_str, fixture_dir)
     druid2 = described_class.new(strictly_valid_druid_str, fixture_dir)
+    druid3 = DruidTools::AccessDruid.new(access_druid_str, fixture_dir)
 
     druid1.mkdir
     expect(File.exist?(tree1)).to be true
     expect(File.exist?(tree2)).to be false
+    expect(File.exist?(tree3)).to be false
 
     druid2.mkdir
     expect(File.exist?(tree1)).to be true
     expect(File.exist?(tree2)).to be true
+    expect(File.exist?(tree3)).to be false
+
+    druid3.mkdir
+    expect(File.exist?(tree1)).to be true
+    expect(File.exist?(tree2)).to be true
+    expect(File.exist?(tree3)).to be true
+
+    druid3.rmdir
+    expect(File.exist?(tree1)).to be true
+    expect(File.exist?(tree2)).to be true
+    expect(File.exist?(tree3)).to be false
 
     druid2.rmdir
     expect(File.exist?(tree1)).to be true
     expect(File.exist?(tree2)).to be false
+    expect(File.exist?(tree3)).to be false
 
     druid1.rmdir
     expect(File.exist?(tree1)).to be false
     expect(File.exist?(tree2)).to be false
+    expect(File.exist?(tree3)).to be false
     expect(File.exist?(File.join(fixture_dir, 'cd'))).to be false
   end
 
@@ -312,6 +336,7 @@ RSpec.describe DruidTools::Druid do
     let(:workspace) { Dir.mktmpdir }
     let(:dr1) { described_class.new(druid_str, workspace) }
     let(:dr2) { described_class.new(strictly_valid_druid_str, workspace) }
+    let(:dr3) { DruidTools::AccessDruid.new(access_druid_str, workspace) }
     let(:pathname1) { dr1.pathname }
 
     before do
@@ -320,6 +345,32 @@ RSpec.describe DruidTools::Druid do
 
     after do
       FileUtils.remove_entry workspace
+    end
+
+    context 'with an access druid sharing the first three path segments' do
+      before do
+        # Nil the create records for this context because we're in a known read only one
+        dr1.mkdir
+        dr2.mkdir
+        dr3.mkdir
+        dr3.prune!
+      end
+
+      it 'deletes the outermost directory' do
+        expect(File).not_to exist(dr3.pruning_base)
+      end
+
+      it 'does not delete unrelated ancestor directories' do
+        expect(File).to exist(dr1.pruning_base)
+        expect(File).to exist(dr1.pruning_base.parent)
+      end
+
+      it 'stops at ancestor directories that have children' do
+        # 'cd/456/ef' should still exist because of dr1
+        shared_ancestor = dr1.pruning_base.parent
+        expect(shared_ancestor.to_s).to match(%r{cd/456/ef$})
+        expect(File).to exist(shared_ancestor)
+      end
     end
 
     context 'when there is a shared ancestor' do

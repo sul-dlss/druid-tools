@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe DruidTools::PurlDruid do
   let(:purl_root) { Dir.mktmpdir }
 
-  let(:druid) { described_class.new 'druid:cd456ef7890', purl_root }
+  let(:druid) { described_class.new druid_str, purl_root }
+  let(:druid_str) { 'druid:cd456ef7890' }
 
   after do
     FileUtils.remove_entry purl_root
@@ -13,6 +14,12 @@ RSpec.describe DruidTools::PurlDruid do
 
   it 'overrides Druid#tree so that the leaf is not Druid#id' do
     expect(druid.tree).to eq(%w[cd 456 ef 7890])
+  end
+
+  describe '#pruning_base' do
+    subject(:path) { described_class.new(druid_str).pruning_base }
+
+    it { is_expected.to eq(Pathname.new('./cd/456/ef/7890')) }
   end
 
   describe '#content_dir' do
