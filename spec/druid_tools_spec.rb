@@ -119,8 +119,7 @@ RSpec.describe DruidTools::Druid do
     expect(druid.path).to eq(tree1)
   end
 
-  it '#mkdir creates, and #rmdir destroys, *only* the expected druid directory' do
-    allow(Deprecation).to receive(:warn)
+  it '#mkdir creates the expected druid directory' do
     expect(File.exist?(tree1)).to be false
     expect(File.exist?(tree2)).to be false
     expect(File.exist?(tree3)).to be false
@@ -143,22 +142,6 @@ RSpec.describe DruidTools::Druid do
     expect(File.exist?(tree1)).to be true
     expect(File.exist?(tree2)).to be true
     expect(File.exist?(tree3)).to be true
-
-    druid3.rmdir
-    expect(File.exist?(tree1)).to be true
-    expect(File.exist?(tree2)).to be true
-    expect(File.exist?(tree3)).to be false
-
-    druid2.rmdir
-    expect(File.exist?(tree1)).to be true
-    expect(File.exist?(tree2)).to be false
-    expect(File.exist?(tree3)).to be false
-
-    druid1.rmdir
-    expect(File.exist?(tree1)).to be false
-    expect(File.exist?(tree2)).to be false
-    expect(File.exist?(tree3)).to be false
-    expect(File.exist?(File.join(fixture_dir, 'cd'))).to be false
   end
 
   describe 'alternate prefixes' do
@@ -302,118 +285,6 @@ RSpec.describe DruidTools::Druid do
       FileUtils.ln_s(source_dir, new_path, force: true)
 
       expect { dr.mkdir }.to raise_error(DruidTools::DifferentContentExistsError)
-    end
-  end
-
-  describe '#mkdir_with_final_link' do
-    let(:source_dir) { '/tmp/content_dir' }
-    let(:druid_obj) { described_class.new(strictly_valid_druid_str, fixture_dir) }
-
-    before do
-      allow(Deprecation).to receive(:warn)
-      FileUtils.mkdir_p(source_dir)
-    end
-
-    it 'creates a druid tree in the workspace with the final directory being a link to the passed in source' do
-      druid_obj.mkdir_with_final_link(source_dir)
-      expect(File).to be_symlink(druid_obj.path)
-      expect(File.readlink(tree2)).to eq(source_dir)
-    end
-
-    it 'does not error out if the link to source already exists' do
-      druid_obj.mkdir_with_final_link(source_dir)
-      expect(File).to be_symlink(druid_obj.path)
-      expect(File.readlink(tree2)).to eq(source_dir)
-    end
-
-    it 'raises DifferentContentExistsError if a directory already exists in the workspace for this druid' do
-      druid_obj.mkdir(fixture_dir)
-      expect { druid_obj.mkdir_with_final_link(source_dir) }.to raise_error(DruidTools::DifferentContentExistsError)
-    end
-  end
-
-  describe '#prune!' do
-    let(:workspace) { Dir.mktmpdir }
-    let(:dr1) { described_class.new(druid_str, workspace) }
-    let(:dr2) { described_class.new(strictly_valid_druid_str, workspace) }
-    let(:dr3) { DruidTools::AccessDruid.new(access_druid_str, workspace) }
-    let(:pathname1) { dr1.pathname }
-
-    before do
-      allow(Deprecation).to receive(:warn)
-    end
-
-    after do
-      FileUtils.remove_entry workspace
-    end
-
-    context 'with an access druid sharing the first three path segments' do
-      before do
-        # Nil the create records for this context because we're in a known read only one
-        dr1.mkdir
-        dr2.mkdir
-        dr3.mkdir
-        dr3.prune!
-      end
-
-      it 'deletes the outermost directory' do
-        expect(File).not_to exist(dr3.pruning_base)
-      end
-
-      it 'does not delete unrelated ancestor directories' do
-        expect(File).to exist(dr1.pruning_base)
-        expect(File).to exist(dr1.pruning_base.parent)
-      end
-
-      it 'stops at ancestor directories that have children' do
-        # 'cd/456/ef' should still exist because of dr1
-        shared_ancestor = dr1.pruning_base.parent
-        expect(shared_ancestor.to_s).to match(%r{cd/456/ef$})
-        expect(File).to exist(shared_ancestor)
-      end
-    end
-
-    context 'when there is a shared ancestor' do
-      before do
-        # Nil the create records for this context because we're in a known read only one
-        dr1.mkdir
-        dr2.mkdir
-        dr1.prune!
-      end
-
-      it 'deletes the outermost directory' do
-        expect(File).not_to exist(dr1.path)
-      end
-
-      it 'deletes empty ancestor directories' do
-        expect(File).not_to exist(pathname1.parent)
-        expect(File).not_to exist(pathname1.parent.parent)
-      end
-
-      it 'stops at ancestor directories that have children' do
-        # 'cd/456' should still exist because of druid2
-        shared_ancestor = pathname1.parent.parent.parent
-        expect(shared_ancestor.to_s).to match(%r{cd/456$})
-        expect(File).to exist(shared_ancestor)
-      end
-    end
-
-    it 'removes all directories up to the base path when there are no common ancestors' do
-      # Nil the create records for this test
-      dr1.mkdir
-      dr1.prune!
-      expect(File).not_to exist(File.join(workspace, 'cd'))
-      expect(File).to exist(workspace)
-    end
-
-    it 'removes directories with symlinks' do
-      # Nil the create records for this test
-      source_dir = File.join workspace, 'src_dir'
-      FileUtils.mkdir_p(source_dir)
-      dr2.mkdir_with_final_link(source_dir)
-      dr2.prune!
-      expect(File).not_to exist(dr2.path)
-      expect(File).not_to exist(File.join(workspace, 'cd'))
     end
   end
 end
