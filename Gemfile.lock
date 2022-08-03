@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    druid-tools (2.2.1)
+    druid-tools (3.0.0)
       deprecation
 
 GEM
