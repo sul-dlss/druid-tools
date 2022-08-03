@@ -71,8 +71,6 @@ d.mkdir
 d.mkdir('temp')
 # Remove a druid tree, but only up to the last shared branch directory
 d.rmdir
-# Link content from another source into a druid tree
-d.mkdir_with_final_link('/some/other/content/location')
 ```
 
 ### Content-specific methods create the relevant directories if they don't exist
@@ -108,19 +106,6 @@ d.find_metadata('contentMetadata.xml')
 
 d.find_content('this/file/does/not/exist.jpg')
 => nil
-```
-
-### Pruning: removes leaves of tree up to non-empty branches
-
-```ruby
-d1 = DruidTools::Druid.new('druid:cd456ef7890', '/workspace')
-d1.mkdir
-d2 = DruidTools::Druid.new('druid:cd456gh1234', '/workspace')
-d2.mkdir
-
-# /workspace/cd/456/gh/1234/cd456gh1234 pruned down to /workspace/cd/456
-# /workspace/cd/456/ef/7890/cd456ef7890 left intact
-d2.prune!
 ```
 
 ### Stacks and Purl compatible Druid.  All files at the leaf directories

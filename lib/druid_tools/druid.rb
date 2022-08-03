@@ -2,13 +2,9 @@
 
 require 'pathname'
 require 'fileutils'
-require 'deprecation'
 
 module DruidTools
   class Druid
-    extend Deprecation
-    self.deprecation_horizon = 'druid-tools 3.0.0'
-
     attr_accessor :druid, :base
 
     # See https://consul.stanford.edu/pages/viewpage.action?title=SURI+2.0+Specification&spaceKey=chimera
@@ -128,34 +124,6 @@ module DruidTools
       found_dir
     end
 
-    def mkdir_with_final_link(source, extra = nil)
-      new_path = path(extra)
-      if File.directory?(new_path) && !File.symlink?(new_path)
-        raise DruidTools::DifferentContentExistsError, "Unable to create link, directory already exists: #{new_path}"
-      end
-
-      real_path = File.expand_path('..', new_path)
-      FileUtils.mkdir_p(real_path)
-      FileUtils.ln_s(source, new_path, force: true)
-    end
-    deprecation_deprecate :mkdir_with_final_link
-
-    def rmdir(extra = nil)
-      parts = tree
-      parts << extra unless extra.nil?
-      until parts.empty?
-        dir = File.join(base, *parts)
-        begin
-          FileUtils.rm(File.join(dir, '.DS_Store'), force: true)
-          FileUtils.rmdir(dir)
-        rescue Errno::ENOTEMPTY
-          break
-        end
-        parts.pop
-      end
-    end
-    deprecation_deprecate :rmdir
-
     def pathname
       Pathname path
     end
@@ -167,22 +135,5 @@ module DruidTools
     def pruning_base
       pathname.parent
     end
-
-    def prune!
-      pruning_base.rmtree if pruning_base.exist? && pruning_base != base_pathname
-      prune_ancestors pruning_base.parent
-    end
-    deprecation_deprecate :prune!
-
-    # @param [Pathname] outermost_branch The branch at which pruning begins
-    # @return [void] Ascend the druid tree and prune empty branches
-    def prune_ancestors(outermost_branch)
-      while outermost_branch.exist? && outermost_branch.children.empty?
-        outermost_branch.rmdir
-        outermost_branch = outermost_branch.parent
-        break if outermost_branch == base_pathname
-      end
-    end
-    deprecation_deprecate :prune_ancestors
   end
 end
