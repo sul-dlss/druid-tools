@@ -3,11 +3,11 @@
 RSpec.describe DruidTools::Druid do
   let(:fixture_dir) { File.expand_path('fixtures', __dir__) }
   let(:druid_str) { 'druid:cd456ef7890' }
-  let(:tree1) { File.join(fixture_dir, 'cd/456/ef/7890/cd456ef7890') }
+  let(:tree_cd456ef7890) { File.join(fixture_dir, 'cd/456/ef/7890/cd456ef7890') } # rubocop:disable RSpec/IndexedLet
   let(:strictly_valid_druid_str) { 'druid:cd456gh1234' }
-  let(:tree2) { File.join(fixture_dir, 'cd/456/gh/1234/cd456gh1234') }
+  let(:tree_cd456gh1234) { File.join(fixture_dir, 'cd/456/gh/1234/cd456gh1234') }
   let(:access_druid_str) { 'druid:cd456ef9999' }
-  let(:tree3) { File.join(fixture_dir, 'cd/456/ef/9999') }
+  let(:tree_cd456ef9999) { File.join(fixture_dir, 'cd/456/ef/9999') } # rubocop:disable RSpec/IndexedLet
 
   after do
     FileUtils.rm_rf(File.join(fixture_dir, 'cd'))
@@ -116,32 +116,32 @@ RSpec.describe DruidTools::Druid do
   it '#tree builds a druid tree from a druid' do
     druid = described_class.new(druid_str, fixture_dir)
     expect(druid.tree).to eq(%w[cd 456 ef 7890 cd456ef7890])
-    expect(druid.path).to eq(tree1)
+    expect(druid.path).to eq(tree_cd456ef7890)
   end
 
   it '#mkdir creates the expected druid directory' do
-    expect(File.exist?(tree1)).to be false
-    expect(File.exist?(tree2)).to be false
-    expect(File.exist?(tree3)).to be false
+    expect(File.exist?(tree_cd456ef7890)).to be false
+    expect(File.exist?(tree_cd456gh1234)).to be false
+    expect(File.exist?(tree_cd456ef9999)).to be false
 
     druid1 = described_class.new(druid_str, fixture_dir)
     druid2 = described_class.new(strictly_valid_druid_str, fixture_dir)
     druid3 = DruidTools::AccessDruid.new(access_druid_str, fixture_dir)
 
     druid1.mkdir
-    expect(File.exist?(tree1)).to be true
-    expect(File.exist?(tree2)).to be false
-    expect(File.exist?(tree3)).to be false
+    expect(File.exist?(tree_cd456ef7890)).to be true
+    expect(File.exist?(tree_cd456gh1234)).to be false
+    expect(File.exist?(tree_cd456ef9999)).to be false
 
     druid2.mkdir
-    expect(File.exist?(tree1)).to be true
-    expect(File.exist?(tree2)).to be true
-    expect(File.exist?(tree3)).to be false
+    expect(File.exist?(tree_cd456ef7890)).to be true
+    expect(File.exist?(tree_cd456gh1234)).to be true
+    expect(File.exist?(tree_cd456ef9999)).to be false
 
     druid3.mkdir
-    expect(File.exist?(tree1)).to be true
-    expect(File.exist?(tree2)).to be true
-    expect(File.exist?(tree3)).to be true
+    expect(File.exist?(tree_cd456ef7890)).to be true
+    expect(File.exist?(tree_cd456gh1234)).to be true
+    expect(File.exist?(tree_cd456ef9999)).to be true
   end
 
   describe 'alternate prefixes' do
@@ -163,24 +163,24 @@ RSpec.describe DruidTools::Druid do
   describe 'content directories' do
     it 'knows where its content goes' do
       druid = described_class.new(druid_str, fixture_dir)
-      expect(druid.content_dir(false)).to eq(File.join(tree1, 'content'))
-      expect(druid.metadata_dir(false)).to eq(File.join(tree1, 'metadata'))
-      expect(druid.temp_dir(false)).to eq(File.join(tree1, 'temp'))
+      expect(druid.content_dir(false)).to eq(File.join(tree_cd456ef7890, 'content'))
+      expect(druid.metadata_dir(false)).to eq(File.join(tree_cd456ef7890, 'metadata'))
+      expect(druid.temp_dir(false)).to eq(File.join(tree_cd456ef7890, 'temp'))
 
-      expect(File.exist?(File.join(tree1, 'content'))).to be false
-      expect(File.exist?(File.join(tree1, 'metadata'))).to be false
-      expect(File.exist?(File.join(tree1, 'temp'))).to be false
+      expect(File.exist?(File.join(tree_cd456ef7890, 'content'))).to be false
+      expect(File.exist?(File.join(tree_cd456ef7890, 'metadata'))).to be false
+      expect(File.exist?(File.join(tree_cd456ef7890, 'temp'))).to be false
     end
 
     it 'creates its content directories on the fly' do
       druid = described_class.new(druid_str, fixture_dir)
-      expect(druid.content_dir).to eq(File.join(tree1, 'content'))
-      expect(druid.metadata_dir).to eq(File.join(tree1, 'metadata'))
-      expect(druid.temp_dir).to eq(File.join(tree1, 'temp'))
+      expect(druid.content_dir).to eq(File.join(tree_cd456ef7890, 'content'))
+      expect(druid.metadata_dir).to eq(File.join(tree_cd456ef7890, 'metadata'))
+      expect(druid.temp_dir).to eq(File.join(tree_cd456ef7890, 'temp'))
 
-      expect(File.exist?(File.join(tree1, 'content'))).to be true
-      expect(File.exist?(File.join(tree1, 'metadata'))).to be true
-      expect(File.exist?(File.join(tree1, 'temp'))).to be true
+      expect(File.exist?(File.join(tree_cd456ef7890, 'content'))).to be true
+      expect(File.exist?(File.join(tree_cd456ef7890, 'metadata'))).to be true
+      expect(File.exist?(File.join(tree_cd456ef7890, 'temp'))).to be true
     end
 
     it 'matches glob' do
