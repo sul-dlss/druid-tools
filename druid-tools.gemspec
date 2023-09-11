@@ -16,11 +16,4 @@ Gem::Specification.new do |gem|
   gem.name          = 'druid-tools'
   gem.require_paths = ['lib']
   gem.version       = File.read('VERSION').strip
-
-  gem.add_development_dependency 'rake', '>= 10.1.0'
-  gem.add_development_dependency 'rspec', '~> 3.0'
-  gem.add_development_dependency 'rubocop'
-  gem.add_development_dependency 'rubocop-rake'
-  gem.add_development_dependency 'rubocop-rspec'
-  gem.add_development_dependency 'simplecov'
 end
