@@ -24,25 +24,25 @@ RSpec/BeforeAfterAll:
     - '**/spec/spec_helper.rb'
     - '**/spec/rails_helper.rb'
     - '**/spec/support/**/*.rb'
-    - 'spec/druid_tools_spec.rb'
+    - 'spec/druid_tools/druid_spec.rb'
 
 # Offense count: 7
 # Configuration parameters: Max, CountAsOne.
 RSpec/ExampleLength:
   Exclude:
-    - 'spec/druid_tools_spec.rb'
+    - 'spec/druid_tools/druid_spec.rb'
 
 # Offense count: 10
 # Configuration parameters: Max.
 RSpec/MultipleExpectations:
   Exclude:
-    - 'spec/druid_tools_spec.rb'
+    - 'spec/druid_tools/druid_spec.rb'
 
 # Offense count: 9
 # Configuration parameters: AllowSubject, Max.
 RSpec/MultipleMemoizedHelpers:
   Exclude:
-    - 'spec/druid_tools_spec.rb'
+    - 'spec/druid_tools/druid_spec.rb'
 
 # Offense count: 1
 # Configuration parameters: AllowedConstants.
@@ -73,4 +73,4 @@ Style/OptionalBooleanParameter:
 Layout/LineLength:
   Exclude:
     - 'lib/druid_tools/druid.rb'
-    - 'spec/druid_tools_spec.rb'
+    - 'spec/druid_tools/druid_spec.rb'
