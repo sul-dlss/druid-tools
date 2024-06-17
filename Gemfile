@@ -7,8 +7,11 @@ group :development do
   gem 'rake', '>= 10.1.0'
   gem 'rspec', '~> 3.0'
   gem 'rubocop'
+  gem 'rubocop-capybara'
+  gem 'rubocop-factory_bot'
   gem 'rubocop-rake'
   gem 'rubocop-rspec'
+  gem 'rubocop-rspec_rails'
   gem 'simplecov'
 end
 
