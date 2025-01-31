@@ -1,7 +1,6 @@
 [![CircleCI](https://circleci.com/gh/sul-dlss/druid-tools/tree/main.svg?style=svg)](https://circleci.com/gh/sul-dlss/druid-tools/tree/main)
 [![Gem Version](https://badge.fury.io/rb/druid-tools.svg)](https://badge.fury.io/rb/druid-tools)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/a21a8f4d0abae265638e/test_coverage)](https://codeclimate.com/github/sul-dlss/druid-tools/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/a21a8f4d0abae265638e/maintainability)](https://codeclimate.com/github/sul-dlss/druid-tools/maintainability)
+[![codecov](https://codecov.io/github/sul-dlss/druid-tools/graph/badge.svg?token=1KZ423kSwj)](https://codecov.io/github/sul-dlss/druid-tools)
 
 # Druid::Tools
 
