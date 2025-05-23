@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.description   = 'Tools to manipulate DRUID trees and content directories'
   gem.summary       = 'Tools to manipulate DRUID trees and content directories'
   gem.homepage      = 'http://github.com/sul-dlss/druid-tools'
-  gem.licenses      = ['ALv2', 'Stanford University Libraries']
+  gem.licenses      = ['Apache-2.0']
   gem.metadata['rubygems_mfa_required'] = 'true'
 
   gem.required_ruby_version = '>= 3.0'
