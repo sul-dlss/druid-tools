@@ -137,7 +137,7 @@ RSpec/SubjectDeclaration: # new in 2.5
   Enabled: true
 FactoryBot/SyntaxMethods: # new in 2.7
   Enabled: true
-RSpec/Rails/AvoidSetupHook: # new in 2.4
+RSpecRails/AvoidSetupHook: # new in 2.4
   Enabled: true
 Gemspec/DeprecatedAttributeAssignment: # new in 1.30
   Enabled: true
@@ -182,7 +182,7 @@ RSpec/NoExpectationExample: # new in 2.13
   Enabled: true
 Capybara/SpecificFinders: # new in 2.13
   Enabled: true
-Capybara/SpecificMatcher: # new in 2.12
+Capybara/RSpec/SpecificMatcher: # new in 2.12
   Enabled: true
 RSpec/Rails/HaveHttpStatus: # new in 2.12
   Enabled: true
@@ -209,7 +209,7 @@ RSpec/PendingWithoutReason: # new in 2.16
   Enabled: true
 RSpec/SortMetadata: # new in 2.14
   Enabled: true
-Capybara/NegationMatcher: # new in 2.14
+Capybara/RSpec/NegationMatcher: # new in 2.14
   Enabled: true
 Capybara/SpecificActions: # new in 2.14
   Enabled: true
@@ -217,7 +217,7 @@ FactoryBot/ConsistentParenthesesStyle: # new in 2.14
   Enabled: true
 FactoryBot/FactoryNameStyle: # new in 2.16
   Enabled: true
-RSpec/Rails/InferredSpecType: # new in 2.14
+RSpecRails/InferredSpecType: # new in 2.14
   Enabled: true
 
 Lint/DuplicateMatchPattern: # new in 1.50
@@ -250,7 +250,7 @@ Style/RedundantLineContinuation: # new in 1.49
   Enabled: true
 Style/RedundantRegexpConstructor: # new in 1.52
   Enabled: true
-Capybara/MatchStyle: # new in 2.17
+Capybara/RSpec/MatchStyle: # new in 2.17
   Enabled: true
 FactoryBot/AssociationStyle: # new in 2.23
   Enabled: true
@@ -270,9 +270,9 @@ RSpec/RedundantAround: # new in 2.19
   Enabled: true
 RSpec/SkipBlockInsideExample: # new in 2.19
   Enabled: true
-RSpec/Rails/MinitestAssertions: # new in 2.17
+RSpecRails/MinitestAssertions: # new in 2.17
   Enabled: true
-RSpec/Rails/TravelAround: # new in 2.19
+RSpecRails/TravelAround: # new in 2.19
   Enabled: true
 
 Gemspec/DevelopmentDependencies: # new in 1.44
@@ -303,7 +303,7 @@ RSpec/SpecFilePathFormat: # new in 2.24
     - spec/druid_tools_spec.rb
 RSpec/SpecFilePathSuffix: # new in 2.24
   Enabled: true
-RSpec/Rails/NegationBeValid: # new in 2.23
+RSpecRails/NegationBeValid: # new in 2.23
   Enabled: true
 
 Capybara/ClickLinkOrButtonStyle: # new in 2.19
