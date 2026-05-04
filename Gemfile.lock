@@ -12,7 +12,7 @@ GEM
     diff-lcs (1.6.2)
     docile (1.4.1)
     io-console (0.8.2)
-    json (2.19.4)
+    json (2.19.5)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     parallel (2.1.0)
@@ -53,9 +53,9 @@ GEM
     rubocop-ast (1.49.1)
       parser (>= 3.3.7.2)
       prism (~> 1.7)
-    rubocop-capybara (2.22.1)
+    rubocop-capybara (2.23.0)
       lint_roller (~> 1.1)
-      rubocop (~> 1.72, >= 1.72.1)
+      rubocop (~> 1.81)
     rubocop-factory_bot (2.28.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
@@ -81,6 +81,7 @@ GEM
     unicode-emoji (4.2.0)
 
 PLATFORMS
+  arm64-darwin-25
   x86_64-darwin-21
   x86_64-darwin-22
   x86_64-linux
@@ -99,4 +100,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-  4.0.10
+  4.0.11
