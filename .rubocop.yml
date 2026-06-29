@@ -306,8 +306,6 @@ RSpec/SpecFilePathSuffix: # new in 2.24
 RSpecRails/NegationBeValid: # new in 2.23
   Enabled: true
 
-Capybara/ClickLinkOrButtonStyle: # new in 2.19
-  Enabled: true
 Capybara/RSpec/HaveSelector: # new in 2.19
   Enabled: true
 Capybara/RSpec/PredicateMatcher: # new in 2.19
@@ -458,3 +456,6 @@ RSpec/Output: # new in 3.9
   Enabled: true
 RSpecRails/HttpStatusNameConsistency: # new in 2.32
   Enabled: true
+Capybara/AmbiguousClick: # new in 2.21
+  Enabled: true
+
