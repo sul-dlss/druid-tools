@@ -8,12 +8,17 @@ require:
   - rubocop-rspec_rails
 
 AllCops:
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 4.0
   DisplayCopNames: true
   Exclude:
     - 'Gemfile.lock'
     - '**/*.md'
     - 'vendor/**/*' # avoid running rubocop on cached bundler
+
+# Development uses Ruby 4, but the gem still supports older consumers.
+Gemspec/RequiredRubyVersion:
+  Exclude:
+    - druid-tools.gemspec
 
 Metrics/BlockLength:
   Exclude:
